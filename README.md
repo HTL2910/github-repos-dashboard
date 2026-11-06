@@ -1,8 +1,8 @@
 # 📊 GitHub Repos Dashboard - HTL2910
 
-## 🚀 Hướng dẫn nhanh
+## 🚀 Quick Setup
 
-[![0. Tạo Profile Repo](https://img.shields.io/badge/0._Tạo_Profile_Repo_(username/username)-purple?style=for-the-badge)](https://github.com/new?name=HTL2910&description=Profile+README)
+[![0. Create Profile Repo](https://img.shields.io/badge/0._Create_Profile_Repo_(username/username)-purple?style=for-the-badge)](https://github.com/new?name=HTL2910&description=Profile+README)
 
 [![1. Get Token](https://img.shields.io/badge/1._Get_Personal_Access_Token-orange?style=for-the-badge)](https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard)
 
@@ -10,17 +10,17 @@
 
 [![3. Update Profile](https://img.shields.io/badge/3._Update_Profile_README-success?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
 
-[![Xem Profile](https://img.shields.io/badge/👤_Xem_Profile_của_bạn-blue?style=for-the-badge)](https://github.com/HTL2910/HTL2910)
+[![View Profile](https://img.shields.io/badge/👤_View_Your_Profile-blue?style=for-the-badge)](https://github.com/HTL2910/HTL2910)
 
-> **Bước 0** → Tạo repo tên đúng username của bạn (nếu chưa có)  
-> **Bước 1** → Tạo token (chọn scope `repo`)  
-> **Bước 2** → Thêm secret tên đúng `PERSONAL_ACCESS_TOKEN`  
-> **Bước 3** → Chạy workflow để cập nhật profile
+> **Step 0** → Create a repo named exactly your username (if it doesn't exist)  
+> **Step 1** → Create a token (select `repo` scope)  
+> **Step 2** → Add secret named exactly `PERSONAL_ACCESS_TOKEN`  
+> **Step 3** → Run the workflow to update your profile
 
-**Dashboard web**: [https://HTL2910.github.io/github-repos-dashboard/](https://HTL2910.github.io/github-repos-dashboard/)
+**Web Dashboard**: [https://HTL2910.github.io/github-repos-dashboard/](https://HTL2910.github.io/github-repos-dashboard/)
 
-**Cập nhật**: 2026-11-06 07:54 UTC  
-**Tổng**: 33 repos (0 private / 33 public)
+**Updated**: 2026-11-06 07:58 UTC  
+**Total**: 33 repos (0 private / 33 public)
 
 ---
 

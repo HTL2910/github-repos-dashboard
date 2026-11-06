@@ -11,7 +11,9 @@
     .subtitle { color: #8b949e; margin-bottom: 15px; }
     .profile-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
     .profile-box h3 { margin: 0 0 10px 0; }
-    .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 12px; }
+    .profile-header { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 12px; }
+    .avatar { width: 80px; height: 80px; border-radius: 50%; }
+    .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 12px; }
     .profile-item { background: #0d1117; padding: 8px 12px; border-radius: 6px; }
     .profile-item strong { display: block; color: #8b949e; font-size: 12px; }
     .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0; }
@@ -34,15 +36,16 @@
     .public { background: #238636; }
     .status { margin: 10px 0; color: #8b949e; }
     .commit { font-size: 12px; color: #8b949e; margin-top: 4px; }
-    @media (max-width: 700px) { .charts { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) { .charts { grid-template-columns: 1fr; } .profile-header { flex-direction: column; } }
   </style>
 </head>
 <body>
   <h1>📊 GitHub Repos Dashboard</h1>
-  <p class="subtitle">Nhìn biểu đồ + danh sách là nắm ngay người này làm gì, chuyên môn ra sao.</p>
+  <p class="subtitle">Xem đầy đủ thông tin user + biểu đồ + danh sách repo.</p>
 
   <div class="profile-box" id="profileBox" style="display:none;">
-    <h3>👤 Hồ sơ & Lịch sử hoạt động</h3>
+    <h3>👤 Hồ sơ chi tiết</h3>
+    <div class="profile-header" id="profileHeader"></div>
     <div class="profile-grid" id="profileGrid"></div>
     <div class="charts">
       <div class="chart-box">
@@ -86,8 +89,10 @@
         <th>Language</th>
         <th>Cập nhật</th>
         <th>Stars</th>
+        <th>Forks</th>
+        <th>Issues</th>
         <th>Visibility</th>
-        <th>Mô tả / History gần nhất</th>
+        <th>Mô tả / History</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -106,6 +111,12 @@
       if (text.includes("zalo") || text.includes("bot") || text.includes("miniapp")) return "Bot / Mini App";
       if (text.includes("react") || text.includes("web") || text.includes("frontend") || text.includes("html")) return "Web / Frontend";
       return "Other";
+    }
+
+    function getAccountAge(createdAt) {
+      if (!createdAt) return "-";
+      const years = ((Date.now() - new Date(createdAt)) / (1000 * 60 * 60 * 24 * 365)).toFixed(1);
+      return `${years} năm`;
     }
 
     function updateCharts() {
@@ -146,22 +157,35 @@
     function updateProfile() {
       if (!userProfile) return;
       const joinDate = userProfile.created_at ? new Date(userProfile.created_at).toLocaleDateString("vi-VN") : "-";
+      const age = getAccountAge(userProfile.created_at);
+
+      document.getElementById("profileHeader").innerHTML = `
+        <img class="avatar" src="${userProfile.avatar_url}" alt="avatar">
+        <div>
+          <div style="font-size:18px; font-weight:600;">${userProfile.name || userProfile.login}</div>
+          <div style="color:#8b949e;">@${userProfile.login}</div>
+          ${userProfile.bio ? `<div style="margin-top:6px;">${userProfile.bio}</div>` : ""}
+        </div>
+      `;
 
       document.getElementById("profileGrid").innerHTML = `
-        <div class="profile-item"><strong>Tham gia</strong>${joinDate}</div>
+        <div class="profile-item"><strong>Tham gia</strong>${joinDate} (${age})</div>
         <div class="profile-item"><strong>Public repos</strong>${userProfile.public_repos || 0}</div>
         <div class="profile-item"><strong>Followers</strong>${userProfile.followers || 0}</div>
-        <div class="profile-item"><strong>Tổng repo hiển thị</strong>${allRepos.length}</div>
+        <div class="profile-item"><strong>Following</strong>${userProfile.following || 0}</div>
+        <div class="profile-item"><strong>Company</strong>${userProfile.company || "-"}</div>
+        <div class="profile-item"><strong>Location</strong>${userProfile.location || "-"}</div>
+        <div class="profile-item"><strong>Blog</strong>${userProfile.blog ? `<a href="${userProfile.blog}" target="_blank">${userProfile.blog}</a>` : "-"}</div>
+        <div class="profile-item"><strong>Twitter</strong>${userProfile.twitter_username ? `@${userProfile.twitter_username}` : "-"}</div>
       `;
 
       const langs = {};
       allRepos.forEach(r => { if (r.language) langs[r.language] = (langs[r.language] || 0) + 1; });
-      const topLangs = Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([l,c]) => `${l} (${c})`);
+      const topLangs = Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([l,c]) => `${l} (${c})`);
 
       document.getElementById("skillSummary").innerHTML = `
         <div><strong>Kỹ năng / Ngôn ngữ:</strong></div>
         <div class="skills">${topLangs.map(l => `<span class="skill">${l}</span>`).join("") || "-"}</div>
-        ${userProfile.bio ? `<div style="margin-top:10px;"><strong>Bio:</strong> ${userProfile.bio}</div>` : ""}
       `;
 
       updateCharts();
@@ -179,7 +203,8 @@
 
       try {
         const userRes = await fetch(`https://api.github.com/users/${username}`, { headers });
-        if (userRes.ok) userProfile = await userRes.json();
+        if (!userRes.ok) throw new Error("Không tìm thấy user");
+        userProfile = await userRes.json();
 
         let repos = [];
         let page = 1;
@@ -193,14 +218,14 @@
         }
 
         const withHistory = [];
-        for (const r of repos.slice(0, 25)) {
+        for (const r of repos.slice(0, 20)) {
           let lastCommit = "-";
           try {
             const cRes = await fetch(`https://api.github.com/repos/${username}/${r.name}/commits?per_page=1`, { headers });
             if (cRes.ok) {
               const commits = await cRes.json();
               if (commits[0]) {
-                const msg = commits[0].commit.message.split("\n")[0].slice(0, 70);
+                const msg = commits[0].commit.message.split("\n")[0].slice(0, 60);
                 const date = commits[0].commit.author.date.slice(0, 10);
                 lastCommit = `${date}: ${msg}`;
               }
@@ -208,7 +233,7 @@
           } catch {}
           withHistory.push({ ...r, category: categorize(r), lastCommit });
         }
-        for (const r of repos.slice(25)) {
+        for (const r of repos.slice(20)) {
           withHistory.push({ ...r, category: categorize(r), lastCommit: "-" });
         }
 
@@ -246,9 +271,11 @@
           <td>${r.language || "-"}</td>
           <td>${(r.updated_at || "").slice(0, 10)}</td>
           <td>${r.stargazers_count || 0}</td>
+          <td>${r.forks_count || 0}</td>
+          <td>${r.open_issues_count || 0}</td>
           <td><span class="badge ${r.private ? "private" : "public"}">${r.private ? "Private" : "Public"}</span></td>
           <td>
-            ${(r.description || "-").slice(0, 90)}
+            ${(r.description || "-").slice(0, 80)}
             <div class="commit">📝 ${r.lastCommit || "-"}</div>
           </td>
         `;

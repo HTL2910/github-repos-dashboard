@@ -101,7 +101,6 @@ def update_profile_readme(content: str):
     if not TOKEN:
         print("No token, skip profile update")
         return
-    # Get current file sha if exists
     url = f"https://api.github.com/repos/{OWNER}/{OWNER}/contents/README.md"
     resp = requests.get(url, headers=HEADERS)
     sha = None
@@ -129,14 +128,21 @@ def generate_readme(repos):
     public = total - private
 
     workflow_url = f"https://github.com/{OWNER}/{REPO_NAME}/actions/workflows/update-dashboard.yml"
-    pages_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
+    token_url = "https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard"
+    secrets_url = f"https://github.com/{OWNER}/{REPO_NAME}/settings/secrets/actions"
 
     lines = [
         f"# 📊 GitHub Repos Dashboard - {OWNER}",
         "",
-        f"[![Run Workflow](https://img.shields.io/badge/🚀_Cập_nhật_Dashboard-blue?style=for-the-badge)]({workflow_url})",
+        "## 🚀 Quick Actions",
         "",
-        f"> Workflow này sẽ cập nhật cả **profile README** của bạn (nếu có token).",
+        f"[![Get Token](https://img.shields.io/badge/🔑_Get_Personal_Access_Token-orange?style=for-the-badge)]({token_url})",
+        "",
+        f"[![Update Profile](https://img.shields.io/badge/✅_Update_Profile_README-success?style=for-the-badge)]({workflow_url})",
+        "",
+        "> **Bước 1**: Bấm nút Get Token → tạo token (scope `repo`)  ",
+        f"> **Bước 2**: Vào [Secrets]({secrets_url}) → thêm secret tên `PERSONAL_ACCESS_TOKEN`  ",
+        "> **Bước 3**: Bấm nút Update Profile README",
         "",
         f"**Cập nhật**: {now}  ",
         f"**Tổng**: {total} repos ({private} private / {public} public)",
@@ -168,9 +174,6 @@ def generate_readme(repos):
     lines.extend([
         "---",
         "",
-        "### Muốn cập nhật profile README?",
-        "Thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`) rồi chạy workflow.",
-        "",
         "*Generated automatically*"
     ])
     return "\n".join(lines)
@@ -180,12 +183,10 @@ if __name__ == "__main__":
     repos = get_repos(OWNER)
     print(f"Found {len(repos)} repositories")
 
-    # Update local README
     readme = generate_readme(repos)
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme)
     print("README.md updated")
 
-    # Try update profile README
     profile_content = generate_profile_readme(repos)
     update_profile_readme(profile_content)

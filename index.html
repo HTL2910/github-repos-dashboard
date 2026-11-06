@@ -67,7 +67,7 @@
   </div>
 
   <div class="controls">
-    <input type="text" id="username" placeholder="Username hoặc link GitHub (vd: HTL2910 hoặc https://github.com/HTL2910)" value="HTL2910" style="min-width:280px;">
+    <input type="text" id="username" placeholder="Username (tự động nhận nếu đang chạy trên GitHub Pages)" value="" style="min-width:280px;">
     <input type="password" id="token" placeholder="Token (tùy chọn - xem private)">
     <button onclick="loadRepos()">Tải Dashboard</button>
     <select id="filter" onchange="renderTable()">
@@ -86,7 +86,7 @@
     <input type="text" id="search" placeholder="Tìm kiếm..." oninput="renderTable()">
   </div>
 
-  <div class="status" id="status">Bấm Tải Dashboard để xem</div>
+  <div class="status" id="status">Đang tự động nhận diện user...</div>
   <table id="table">
     <thead>
       <tr>
@@ -111,13 +111,21 @@
     let langChart = null;
     let network = null;
 
+    // Auto-detect username from GitHub Pages hostname
+    function detectUsername() {
+      const host = window.location.hostname;
+      // Pattern: username.github.io
+      if (host.endsWith(".github.io")) {
+        return host.replace(".github.io", "");
+      }
+      return "";
+    }
+
     function extractUsername(input) {
-      if (!input) return "HTL2910";
+      if (!input) return detectUsername() || "";
       input = input.trim();
-      // Handle full URL
       const urlMatch = input.match(/github\.com\/([\w-]+)/i);
       if (urlMatch) return urlMatch[1];
-      // Handle owner/repo format
       if (input.includes("/")) return input.split("/")[0];
       return input;
     }
@@ -276,7 +284,11 @@
     async function loadRepos() {
       let input = document.getElementById("username").value.trim();
       const username = extractUsername(input);
-      document.getElementById("username").value = username; // normalize display
+      if (!username) {
+        document.getElementById("status").textContent = "Không tự động nhận diện được username. Hãy nhập thủ công.";
+        return;
+      }
+      document.getElementById("username").value = username;
 
       const token = document.getElementById("token").value.trim();
       const status = document.getElementById("status");
@@ -287,7 +299,7 @@
 
       try {
         const userRes = await fetch(`https://api.github.com/users/${username}`, { headers });
-        if (!userRes.ok) throw new Error(`Không tìm thấy user "${username}". Hãy nhập đúng username (vd: HTL2910)`);
+        if (!userRes.ok) throw new Error(`Không tìm thấy user "${username}"`);
         userProfile = await userRes.json();
 
         let repos = [];
@@ -366,6 +378,17 @@
         tbody.appendChild(tr);
       });
     }
+
+    // Auto-load on page open
+    window.addEventListener("DOMContentLoaded", () => {
+      const detected = detectUsername();
+      if (detected) {
+        document.getElementById("username").value = detected;
+        loadRepos();
+      } else {
+        document.getElementById("status").textContent = "Hãy nhập username rồi bấm Tải Dashboard";
+      }
+    });
   </script>
 </body>
 </html>

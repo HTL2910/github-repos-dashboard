@@ -36,7 +36,7 @@
     .badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; }
     .private { background: #da3633; }
     .public { background: #238636; }
-    .status { margin: 10px 0; color: #8b949e; }
+    .status { margin: 10px 0; color: #8b949e; white-space: pre-wrap; }
     .commit { font-size: 12px; color: #8b949e; margin-top: 4px; }
     @media (max-width: 700px) { .charts { grid-template-columns: 1fr; } .profile-header { flex-direction: column; } }
   </style>
@@ -68,7 +68,7 @@
 
   <div class="controls">
     <input type="text" id="username" placeholder="Username (tự động nhận nếu đang chạy trên GitHub Pages)" value="" style="min-width:280px;">
-    <input type="password" id="token" placeholder="Token (tùy chọn - xem private)">
+    <input type="password" id="token" placeholder="Token (bắt buộc nếu bị rate limit)">
     <button onclick="loadRepos()">Tải Dashboard</button>
     <select id="filter" onchange="renderTable()">
       <option value="all">Tất cả nhóm</option>
@@ -98,7 +98,7 @@
         <th>Forks</th>
         <th>Issues</th>
         <th>Visibility</th>
-        <th>Mô tả / History</th>
+        <th>Mô tả</th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -177,7 +177,7 @@
         nodeIds.add(id);
       });
 
-      allRepos.slice(0, 12).forEach(r => {
+      allRepos.slice(0, 10).forEach(r => {
         const id = "repo_" + r.name;
         nodes.push({ id, label: r.name, color: "#8957e5", size: 14, font: { color: "#fff", size: 11 } });
         const catId = "cat_" + r.category;
@@ -192,16 +192,15 @@
       const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
       const options = {
         physics: {
-          stabilization: { iterations: 150 },
+          stabilization: { iterations: 100 },
           barnesHut: { gravitationalConstant: -12000, springLength: 180 }
         },
         interaction: { hover: true, tooltipDelay: 100, navigationButtons: true },
-        nodes: { shape: "dot" },
-        layout: { improvedLayout: true }
+        nodes: { shape: "dot" }
       };
       if (network) network.destroy();
       network = new vis.Network(container, data, options);
-      setTimeout(() => network.fit(), 500);
+      setTimeout(() => network.fit(), 400);
     }
 
     function updateCharts() {
@@ -297,15 +296,18 @@
 
       try {
         const userRes = await fetch(`https://api.github.com/users/${username}`, { headers });
+        if (userRes.status === 403) {
+          throw new Error("Bị rate limit (403). Hãy dán Personal Access Token vào ô Token rồi bấm Tải Dashboard lại.\n(Tạo token tại: github.com/settings/tokens — scope public_repo là đủ)");
+        }
         if (!userRes.ok) {
           const errText = await userRes.text();
-          throw new Error(`API lỗi ${userRes.status}: ${errText.slice(0, 200)}`);
+          throw new Error(`API lỗi ${userRes.status}: ${errText.slice(0, 150)}`);
         }
         userProfile = await userRes.json();
 
         let repos = [];
         let page = 1;
-        while (page <= 5) {
+        while (page <= 3) {
           const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&page=${page}&sort=updated&type=owner`, { headers });
           if (!res.ok) throw new Error(`Repos HTTP ${res.status}`);
           const data = await res.json();
@@ -314,27 +316,9 @@
           page++;
         }
 
-        const withHistory = [];
-        for (const r of repos.slice(0, 15)) {
-          let lastCommit = "-";
-          try {
-            const cRes = await fetch(`https://api.github.com/repos/${username}/${r.name}/commits?per_page=1`, { headers });
-            if (cRes.ok) {
-              const commits = await cRes.json();
-              if (commits[0]) {
-                const msg = commits[0].commit.message.split("\n")[0].slice(0, 60);
-                const date = commits[0].commit.author.date.slice(0, 10);
-                lastCommit = `${date}: ${msg}`;
-              }
-            }
-          } catch {}
-          withHistory.push({ ...r, category: categorize(r), lastCommit });
-        }
-        for (const r of repos.slice(15)) {
-          withHistory.push({ ...r, category: categorize(r), lastCommit: "-" });
-        }
+        // No per-repo commit fetch to save rate limit
+        allRepos = repos.map(r => ({ ...r, category: categorize(r), lastCommit: "-" }));
 
-        allRepos = withHistory;
         status.textContent = `Đã tải ${allRepos.length} repo của ${username}`;
         updateProfile();
         renderTable();
@@ -352,7 +336,7 @@
 
       let filtered = allRepos.filter(r => {
         if (filter !== "all" && r.category !== filter) return false;
-        const text = (r.name + " " + (r.description || "") + " " + (r.lastCommit || "")).toLowerCase();
+        const text = (r.name + " " + (r.description || "")).toLowerCase();
         return text.includes(search);
       });
 
@@ -371,16 +355,12 @@
           <td>${r.forks_count || 0}</td>
           <td>${r.open_issues_count || 0}</td>
           <td><span class="badge ${r.private ? "private" : "public"}">${r.private ? "Private" : "Public"}</span></td>
-          <td>
-            ${(r.description || "-").slice(0, 80)}
-            <div class="commit">📝 ${r.lastCommit || "-"}</div>
-          </td>
+          <td>${(r.description || "-").slice(0, 100)}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // Auto-load
     window.addEventListener("DOMContentLoaded", () => {
       const detected = detectUsername();
       if (detected) {

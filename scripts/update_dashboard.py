@@ -99,7 +99,7 @@ def generate_profile_readme(repos):
 
 def update_profile_readme(content: str):
     if not TOKEN:
-        print("No token, skip profile update")
+        print("No PERSONAL_ACCESS_TOKEN, skip profile update")
         return
     url = f"https://api.github.com/repos/{OWNER}/{OWNER}/contents/README.md"
     resp = requests.get(url, headers=HEADERS)
@@ -117,9 +117,9 @@ def update_profile_readme(content: str):
 
     put = requests.put(url, headers=HEADERS, json=payload)
     if put.status_code in (200, 201):
-        print("Profile README updated")
+        print("Profile README updated successfully")
     else:
-        print(f"Profile update failed: {put.status_code} - {put.text[:200]}")
+        print(f"Profile update failed: {put.status_code} - {put.text[:300]}")
 
 def generate_readme(repos):
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
@@ -130,19 +130,24 @@ def generate_readme(repos):
     workflow_url = f"https://github.com/{OWNER}/{REPO_NAME}/actions/workflows/update-dashboard.yml"
     token_url = "https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard"
     secrets_url = f"https://github.com/{OWNER}/{REPO_NAME}/settings/secrets/actions"
+    pages_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
 
     lines = [
         f"# 📊 GitHub Repos Dashboard - {OWNER}",
         "",
-        "## 🚀 Quick Actions",
+        "## 🚀 3 Nút quan trọng",
         "",
-        f"[![Get Token](https://img.shields.io/badge/🔑_Get_Personal_Access_Token-orange?style=for-the-badge)]({token_url})",
+        f"[![1. Get Token](https://img.shields.io/badge/1._Get_Personal_Access_Token-orange?style=for-the-badge)]({token_url})",
         "",
-        f"[![Update Profile](https://img.shields.io/badge/✅_Update_Profile_README-success?style=for-the-badge)]({workflow_url})",
+        f"[![2. Add Secret](https://img.shields.io/badge/2._Add_Secret_PERSONAL_ACCESS_TOKEN-yellow?style=for-the-badge)]({secrets_url})",
         "",
-        "> **Bước 1**: Bấm nút Get Token → tạo token (scope `repo`)  ",
-        f"> **Bước 2**: Vào [Secrets]({secrets_url}) → thêm secret tên `PERSONAL_ACCESS_TOKEN`  ",
-        "> **Bước 3**: Bấm nút Update Profile README",
+        f"[![3. Update Profile](https://img.shields.io/badge/3._Update_Profile_README-success?style=for-the-badge)]({workflow_url})",
+        "",
+        "> **Bước 1** → Tạo token (chọn scope `repo`)  ",
+        "> **Bước 2** → Thêm secret tên đúng `PERSONAL_ACCESS_TOKEN`  ",
+        "> **Bước 3** → Chạy workflow để cập nhật profile",
+        "",
+        f"**Dashboard web**: [{pages_url}]({pages_url})",
         "",
         f"**Cập nhật**: {now}  ",
         f"**Tổng**: {total} repos ({private} private / {public} public)",

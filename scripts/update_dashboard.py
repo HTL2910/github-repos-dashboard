@@ -63,6 +63,9 @@ def generate_profile_readme(repos):
     top_langs = sorted(langs.items(), key=lambda x: -x[1])[:5]
     lang_badges = " ".join([f"`{l}`" for l, _ in top_langs])
 
+    dashboard_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
+    source_url = f"https://github.com/{OWNER}/{REPO_NAME}"
+
     lines = [
         "<div align=\"center\">",
         "",
@@ -70,7 +73,9 @@ def generate_profile_readme(repos):
         "",
         f"**Repos Dashboard** — tự động cập nhật",
         "",
-        f"[![Dashboard](https://img.shields.io/badge/📊_Xem_chi_tiết-blue?style=for-the-badge)](https://{OWNER}.github.io/{REPO_NAME}/)",
+        f"[![Dashboard](https://img.shields.io/badge/📊_Xem_Dashboard_đầy_đủ-blue?style=for-the-badge)]({dashboard_url})",
+        "",
+        f"[![Source](https://img.shields.io/badge/🔧_Quản_lý_Dashboard-green?style=for-the-badge)]({source_url})",
         "",
         "</div>",
         "",
@@ -94,7 +99,7 @@ def generate_profile_readme(repos):
         "",
         "---",
         "",
-        f"*Profile được tự động cập nhật từ [{REPO_NAME}](https://github.com/{OWNER}/{REPO_NAME})*"
+        f"*Profile được tự động cập nhật từ [{REPO_NAME}]({source_url})*"
     ])
     return "\n".join(lines)
 
@@ -132,7 +137,6 @@ def generate_readme(repos):
     token_url = "https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard"
     secrets_url = f"https://github.com/{OWNER}/{REPO_NAME}/settings/secrets/actions"
     pages_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
-    # Link to create or view the special profile repo
     profile_repo_url = f"https://github.com/new?name={OWNER}&description=Profile+README"
     profile_view_url = f"https://github.com/{OWNER}/{OWNER}"
 

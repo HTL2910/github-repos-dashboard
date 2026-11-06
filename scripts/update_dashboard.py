@@ -8,9 +8,9 @@ import requests
 from datetime import datetime
 from collections import defaultdict
 
-# Get owner from environment (set by GitHub Action)
 OWNER = os.getenv("GITHUB_REPOSITORY_OWNER") or os.getenv("GITHUB_ACTOR") or "HTL2910"
 TOKEN = os.getenv("GITHUB_TOKEN") or os.getenv("PERSONAL_ACCESS_TOKEN")
+REPO_NAME = os.getenv("GITHUB_REPOSITORY", f"{OWNER}/github-repos-dashboard").split("/")[-1]
 
 HEADERS = {"Accept": "application/vnd.github+json"}
 if TOKEN:
@@ -31,7 +31,7 @@ def get_repos(username: str):
             break
         repos.extend(data)
         page += 1
-        if page > 10:  # safety limit
+        if page > 10:
             break
     return repos
 
@@ -57,11 +57,15 @@ def generate_readme(repos):
     private = sum(1 for r in repos if r.get("private"))
     public = total - private
 
+    workflow_url = f"https://github.com/{OWNER}/{REPO_NAME}/actions/workflows/update-dashboard.yml"
+
     lines = [
         f"# 📊 GitHub Repos Dashboard - {OWNER}",
         "",
-        "> Dashboard tự động tổng hợp tất cả repository của user hiện tại.",
-        "> Khi fork repo này, nó sẽ tự động lấy data của **bạn**.",
+        f"[![Run Workflow](https://img.shields.io/badge/🚀_Chạy_Dashboard-blue?style=for-the-badge)]({workflow_url})",
+        "",
+        "> **Bấm nút trên để cập nhật dashboard ngay** (1 click).",
+        "> Fork repo này về là dùng được cho account của bạn.",
         "",
         f"**Cập nhật**: {now}  ",
         f"**Tổng**: {total} repos ({private} private / {public} public)",
@@ -93,11 +97,10 @@ def generate_readme(repos):
     lines.extend([
         "---",
         "",
-        "### Cách dùng",
-        "- Fork repo này → Action sẽ tự động chạy và tạo dashboard của bạn.",
-        "- Muốn thấy cả private repo: thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`).",
+        "### Muốn thấy private repo?",
+        "Thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`) rồi bấm nút Run Workflow.",
         "",
-        "*Generated automatically by github-repos-dashboard*"
+        "*Generated automatically*"
     ])
     return "\n".join(lines)
 

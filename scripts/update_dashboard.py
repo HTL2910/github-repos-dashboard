@@ -132,11 +132,16 @@ def generate_readme(repos):
     token_url = "https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard"
     secrets_url = f"https://github.com/{OWNER}/{REPO_NAME}/settings/secrets/actions"
     pages_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
+    # Link to create or view the special profile repo
+    profile_repo_url = f"https://github.com/new?name={OWNER}&description=Profile+README"
+    profile_view_url = f"https://github.com/{OWNER}/{OWNER}"
 
     lines = [
         f"# 📊 GitHub Repos Dashboard - {OWNER}",
         "",
-        "## 🚀 3 Nút quan trọng",
+        "## 🚀 Hướng dẫn nhanh",
+        "",
+        f"[![0. Tạo Profile Repo](https://img.shields.io/badge/0._Tạo_Profile_Repo_(username/username)-purple?style=for-the-badge)]({profile_repo_url})",
         "",
         f"[![1. Get Token](https://img.shields.io/badge/1._Get_Personal_Access_Token-orange?style=for-the-badge)]({token_url})",
         "",
@@ -144,6 +149,9 @@ def generate_readme(repos):
         "",
         f"[![3. Update Profile](https://img.shields.io/badge/3._Update_Profile_README-success?style=for-the-badge)]({workflow_url})",
         "",
+        f"[![Xem Profile](https://img.shields.io/badge/👤_Xem_Profile_của_bạn-blue?style=for-the-badge)]({profile_view_url})",
+        "",
+        "> **Bước 0** → Tạo repo tên đúng username của bạn (nếu chưa có)  ",
         "> **Bước 1** → Tạo token (chọn scope `repo`)  ",
         "> **Bước 2** → Thêm secret tên đúng `PERSONAL_ACCESS_TOKEN`  ",
         "> **Bước 3** → Chạy workflow để cập nhật profile",

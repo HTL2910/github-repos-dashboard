@@ -8,9 +8,12 @@
     body { font-family: system-ui, -apple-system, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #0d1117; color: #e6edf3; }
     h1 { margin-bottom: 5px; }
     .subtitle { color: #8b949e; margin-bottom: 15px; }
-    .skill-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; }
-    .skill-box h3 { margin: 0 0 8px 0; font-size: 16px; }
-    .skills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .profile-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+    .profile-box h3 { margin: 0 0 10px 0; }
+    .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px; }
+    .profile-item { background: #0d1117; padding: 8px 12px; border-radius: 6px; }
+    .profile-item strong { display: block; color: #8b949e; font-size: 12px; }
+    .skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     .skill { background: #238636; padding: 4px 10px; border-radius: 12px; font-size: 13px; }
     .controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
     input, select, button { padding: 8px 12px; border-radius: 6px; border: 1px solid #30363d; background: #161b22; color: #e6edf3; }
@@ -18,8 +21,7 @@
     button:hover { background: #2ea043; }
     table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
     th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #21262d; vertical-align: top; }
-    th { background: #161b22; cursor: pointer; }
-    th:hover { background: #1c2128; }
+    th { background: #161b22; }
     a { color: #58a6ff; text-decoration: none; }
     a:hover { text-decoration: underline; }
     .badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; }
@@ -31,10 +33,11 @@
 </head>
 <body>
   <h1>📊 GitHub Repos Dashboard</h1>
-  <p class="subtitle">Nhìn vào là hiểu ngay chủ tài khoản làm gì, chuyên môn ra sao, đang active những gì.</p>
+  <p class="subtitle">Nhìn phát là nắm được người này tham gia khi nào, làm gì, chuyên môn ra sao, đang active những gì.</p>
 
-  <div class="skill-box" id="skillBox" style="display:none;">
-    <h3>👤 Hồ sơ nhanh</h3>
+  <div class="profile-box" id="profileBox" style="display:none;">
+    <h3>👤 Hồ sơ & Lịch sử hoạt động</h3>
+    <div class="profile-grid" id="profileGrid"></div>
     <div id="skillSummary"></div>
   </div>
 
@@ -76,6 +79,7 @@
 
   <script>
     let allRepos = [];
+    let userProfile = null;
 
     function categorize(repo) {
       const text = ((repo.name || "") + " " + (repo.description || "") + " " + (repo.language || "")).toLowerCase();
@@ -86,20 +90,30 @@
       return "Other";
     }
 
-    function updateSkillSummary() {
+    function updateProfile() {
+      if (!userProfile) return;
+      const joinDate = userProfile.created_at ? new Date(userProfile.created_at).toLocaleDateString("vi-VN") : "-";
       const counts = {};
       allRepos.forEach(r => { counts[r.category] = (counts[r.category] || 0) + 1; });
       const langs = {};
       allRepos.forEach(r => { if (r.language) langs[r.language] = (langs[r.language] || 0) + 1; });
       const topLangs = Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([l,c]) => `${l} (${c})`);
-      const topCats = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([c,n]) => `${c}: ${n}`);
+      const topCats = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+
+      document.getElementById("profileGrid").innerHTML = `
+        <div class="profile-item"><strong>Tham gia</strong>${joinDate}</div>
+        <div class="profile-item"><strong>Public repos</strong>${userProfile.public_repos || 0}</div>
+        <div class="profile-item"><strong>Followers</strong>${userProfile.followers || 0}</div>
+        <div class="profile-item"><strong>Tổng repo hiển thị</strong>${allRepos.length}</div>
+      `;
 
       document.getElementById("skillSummary").innerHTML = `
-        <div><strong>Tổng repo:</strong> ${allRepos.length}</div>
-        <div style="margin:6px 0;"><strong>Nhóm chính:</strong> ${topCats.join(" · ")}</div>
-        <div><strong>Ngôn ngữ hay dùng:</strong> ${topLangs.join(" · ") || "-"}</div>
+        <div><strong>Nhóm chính:</strong> ${topCats.map(([c,n]) => `${c} (${n})`).join(" · ")}</div>
+        <div style="margin-top:6px;"><strong>Kỹ năng / Ngôn ngữ:</strong></div>
+        <div class="skills">${topLangs.map(l => `<span class="skill">${l}</span>`).join("") || "-"}</div>
+        ${userProfile.bio ? `<div style="margin-top:10px;"><strong>Bio:</strong> ${userProfile.bio}</div>` : ""}
       `;
-      document.getElementById("skillBox").style.display = "block";
+      document.getElementById("profileBox").style.display = "block";
     }
 
     async function loadRepos() {
@@ -112,6 +126,11 @@
       if (token) headers["Authorization"] = `Bearer ${token}`;
 
       try {
+        // Load user profile
+        const userRes = await fetch(`https://api.github.com/users/${username}`, { headers });
+        if (userRes.ok) userProfile = await userRes.json();
+
+        // Load repos
         let repos = [];
         let page = 1;
         while (page <= 5) {
@@ -123,16 +142,15 @@
           page++;
         }
 
-        // Fetch latest commit for top repos (to avoid rate limit)
         const withHistory = [];
-        for (const r of repos.slice(0, 40)) {
+        for (const r of repos.slice(0, 30)) {
           let lastCommit = "-";
           try {
             const cRes = await fetch(`https://api.github.com/repos/${username}/${r.name}/commits?per_page=1`, { headers });
             if (cRes.ok) {
               const commits = await cRes.json();
               if (commits[0]) {
-                const msg = commits[0].commit.message.split("\n")[0].slice(0, 80);
+                const msg = commits[0].commit.message.split("\n")[0].slice(0, 70);
                 const date = commits[0].commit.author.date.slice(0, 10);
                 lastCommit = `${date}: ${msg}`;
               }
@@ -140,14 +158,13 @@
           } catch {}
           withHistory.push({ ...r, category: categorize(r), lastCommit });
         }
-        // Add remaining without extra commit fetch
-        for (const r of repos.slice(40)) {
+        for (const r of repos.slice(30)) {
           withHistory.push({ ...r, category: categorize(r), lastCommit: "-" });
         }
 
         allRepos = withHistory;
         status.textContent = `Đã tải ${allRepos.length} repo của ${username}`;
-        updateSkillSummary();
+        updateProfile();
         renderTable();
       } catch (e) {
         status.textContent = "Lỗi: " + e.message;
@@ -181,7 +198,7 @@
           <td>${r.stargazers_count || 0}</td>
           <td><span class="badge ${r.private ? "private" : "public"}">${r.private ? "Private" : "Public"}</span></td>
           <td>
-            ${(r.description || "-").slice(0, 100)}
+            ${(r.description || "-").slice(0, 90)}
             <div class="commit">📝 ${r.lastCommit || "-"}</div>
           </td>
         `;

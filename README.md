@@ -1,97 +1,70 @@
 # 📊 GitHub Repos Dashboard - HTL2910
 
-> **Mục đích**: Giúp chủ sở hữu (và khách tham quan) nhanh chóng nắm rõ tất cả các repository, trạng thái, mục đích và lĩnh vực ngay cả khi đã lâu không quay lại.  
-> Phù hợp để tiếp tục phát triển, fork, học hỏi hoặc đóng góp cộng đồng.
+> Dashboard tự động tổng hợp tất cả repository của user hiện tại.
+> Khi fork repo này, nó sẽ tự động lấy data của **bạn**.
 
-**Cập nhật lần cuối**: 2026-11-06  
-**Tổng số repo**: 58 (30 private / 28 public)
-
----
-
-## 📈 Tổng quan nhanh
-
-| Thống kê | Giá trị |
-|--------|--------|
-| Ngôn ngữ phổ biến | C# (Unity), Python, TypeScript, ShaderLab |
-| Lĩnh vực chính | Unity Game Dev, AI/ML, Zalo Mini App, Web |
-| Hoạt động gần đây | AI Image Gen, Voice Assistant, Zalo MiniApp |
+**Cập nhật**: 2026-11-06 04:24 UTC  
+**Tổng**: 33 repos (0 private / 33 public)
 
 ---
 
-## 🎮 Unity / Game Development (~27 repos)
+## 🌐 Web / Frontend (1)
 
-Tập trung mạnh vào Unity (C# + ShaderLab). Nhiều project học tập, thử nghiệm HDRP/URP, AR/VR và game độc lập.
+| Repo | Language | Updated | Stars | Visibility | Description |
+|------|----------|---------|-------|------------|-------------|
+| [Web-Scraping_Web-Crawling](https://github.com/HTL2910/Web-Scraping_Web-Crawling) | Python | 2025-02-14 | 1 | 🌐 | Use Python 3, Selenium, BeautifulSoup and Chromium |
 
-| Repo | Ngôn ngữ | Cập nhật | Mô tả / Ghi chú | Link |
-|------|--------|----------|----------------|------|
-| Echo-of-the-Void | C# | 2026-09 | 2D Precision-Platformer + Metroidvania | [Link](https://github.com/HTL2910/Echo-of-the-Void) |
-| Wocel | C# | 2026-10 | - | [Link](https://github.com/HTL2910/Wocel) |
-| Fit-Snap | C# | 2026-11 | Private | [Link](https://github.com/HTL2910/Fit-Snap) |
-| Color-Maze-Adventure | ShaderLab | 2025-11 | Unity Game Color Maze | [Link](https://github.com/HTL2910/Color-Maze-Adventure) |
-| Environmental-Education | C# | 2025-09 | Environmental Education Unity Game | [Link](https://github.com/HTL2910/Environmental-Education) |
-| AR_VR_for_Unity | ShaderLab | 2025-06 | AR for Unity | [Link](https://github.com/HTL2910/AR_VR_for_Unity) |
-| Unity_HDRP_Test | - | 2024-04 | Test HDRP features | [Link](https://github.com/HTL2910/Unity_HDRP_Test) |
-| Adventure_3D | - | 2024-03 | Unity adventure 3D | [Link](https://github.com/HTL2910/Adventure_3D) |
-| BanMayBay2D | C# | 2024-03 | 2D unity Basic | [Link](https://github.com/HTL2910/BanMayBay2D) |
-| ... và nhiều repo học Unity khác (JellyField, Infinity-Ball, Casual-Game, URP_Game, ...) | | | | |
+## 🎮 Unity / Game (17)
 
----
+| Repo | Language | Updated | Stars | Visibility | Description |
+|------|----------|---------|-------|------------|-------------|
+| [Echo-of-the-Void](https://github.com/HTL2910/Echo-of-the-Void) | C# | 2026-09-26 | 0 | 🌐 | Echo of the Void là tựa game 2D Precision-Platformer kết hợp |
+| [education](https://github.com/HTL2910/education) | C# | 2025-12-20 | 1 | 🌐 | unity 3d |
+| [Environmental-Education](https://github.com/HTL2910/Environmental-Education) | C# | 2025-12-20 | 1 | 🌐 | Environmental Education Unity Game |
+| [Farm](https://github.com/HTL2910/Farm) | C# | 2025-09-07 | 0 | 🌐 | Farming game made in Unity |
+| [SaveDataUnity](https://github.com/HTL2910/SaveDataUnity) | ShaderLab | 2025-08-23 | 0 | 🌐 | Use Asset Bundles and addressable |
+| [Voice_Game](https://github.com/HTL2910/Voice_Game) | C# | 2025-08-03 | 0 | 🌐 | use voice to play game |
+| [photon_Game](https://github.com/HTL2910/photon_Game) | C# | 2025-08-03 | 0 | 🌐 | Photon Game Unity |
+| [Whisper-For-Unity](https://github.com/HTL2910/Whisper-For-Unity) | - | 2025-07-22 | 0 | 🌐 | Use Whisper for Unity and select Model |
+| [JellyField](https://github.com/HTL2910/JellyField) | ShaderLab | 2025-05-25 | 0 | 🌐 | unity clone test Jelly-Field |
+| [Infinity-Ball](https://github.com/HTL2910/Infinity-Ball) | ShaderLab | 2025-05-17 | 0 | 🌐 | unity beginer |
+| [URP_Game](https://github.com/HTL2910/URP_Game) | ShaderLab | 2024-12-15 | 0 | 🌐 | Use for URP Project Test |
+| [Game-Developer-3D](https://github.com/HTL2910/Game-Developer-3D) | - | 2024-12-02 | 0 | 🌐 | Udemy Course |
+| [Color-Maze-Adventure](https://github.com/HTL2910/Color-Maze-Adventure) | ShaderLab | 2024-11-20 | 0 | 🌐 | Unity Game Color Maze Adventure |
+| [Game-Do_Vui](https://github.com/HTL2910/Game-Do_Vui) | ShaderLab | 2024-08-26 | 0 | 🌐 | unity game 2D |
+| [UnityLearning](https://github.com/HTL2910/UnityLearning) | Mathematica | 2024-08-04 | 0 | 🌐 | https://learn.unity.com/ed-pd/course/teach-unity |
+| [Casual-Game](https://github.com/HTL2910/Casual-Game) | ShaderLab | 2024-07-26 | 0 | 🌐 | unity |
+| [BanMayBay2D](https://github.com/HTL2910/BanMayBay2D) | C# | 2024-03-17 | 0 | 🌐 | 2D unity Basic |
 
-## 🤖 AI / Machine Learning
+## 📁 Other (10)
 
-Đang rất active gần đây.
+| Repo | Language | Updated | Stars | Visibility | Description |
+|------|----------|---------|-------|------------|-------------|
+| [github-repos-dashboard](https://github.com/HTL2910/github-repos-dashboard) | Python | 2026-11-06 | 1 | 🌐 | Automated overview & manager for all personal GitHub reposit |
+| [bang-cards-deck](https://github.com/HTL2910/bang-cards-deck) | TypeScript | 2026-11-01 | 0 | 🌐 | - |
+| [Wocel](https://github.com/HTL2910/Wocel) | C# | 2026-10-08 | 0 | 🌐 | - |
+| [Interview-Project](https://github.com/HTL2910/Interview-Project) | Python | 2026-07-30 | 0 | 🌐 | Interview Job test |
+| [Chay-Code](https://github.com/HTL2910/Chay-Code) | Python | 2025-08-29 | 0 | 🌐 | Chay code |
+| [TestBuildingSystem](https://github.com/HTL2910/TestBuildingSystem) | C# | 2025-07-09 | 0 | 🌐 | testBuilding System - use System Surival  |
+| [OpenCV-with-Python](https://github.com/HTL2910/OpenCV-with-Python) | Python | 2024-11-13 | 0 | 🌐 | OpenCV with Python:Recognition,Detection |
+| [Power-BI](https://github.com/HTL2910/Power-BI) | - | 2024-08-21 | 0 | 🌐 | Hoc Power BI |
+| [Graph-based-recommend-system-using-GNN](https://github.com/HTL2910/Graph-based-recommend-system-using-GNN) | Jupyter Notebook | 2024-07-26 | 0 | 🌐 | Đồ án tốt nghiệp |
+| [HTL2910](https://github.com/HTL2910/HTL2910) | - | 2022-01-23 | 0 | 🌐 | Config files for my GitHub profile. |
 
-| Repo | Ngôn ngữ | Cập nhật | Mô tả | Link |
-|------|--------|----------|--------|------|
-| AI-Gen-Image-Local | Python | 2026-11-06 | Local AI image generation service (Supra2-IMG) | [Link](https://github.com/HTL2910/AI-Gen-Image-Local) |
-| ai-voice-assistant | Python | 2026-11-05 | AI Voice Assistant for customer service | [Link](https://github.com/HTL2910/ai-voice-assistant) |
-| AWS-AI-chatbot | TypeScript | 2026-11-04 | SafeGraph AI - VS Code assistant with Bedrock | [Link](https://github.com/HTL2910/AWS-AI-chatbot) |
-| Graph-based-recommend-system-using-GNN | Jupyter | 2024-07 | Đồ án tốt nghiệp | [Link](https://github.com/HTL2910/Graph-based-recommend-system-using-GNN) |
-| OpenCV-with-Python | Python | 2024-11 | Recognition & Detection | [Link](https://github.com/HTL2910/OpenCV-with-Python) |
-| Full-Stack-Data-Science---Machine-Learning-BootCamp-Course | Jupyter | 2026-09 | Udemy Bootcamp | [Link](https://github.com/HTL2910/Full-Stack-Data-Science---Machine-Learning-BootCamp-Course) |
+## 🤖 AI / ML (5)
 
----
-
-## 💬 Zalo / Chatbot / Mini App
-
-| Repo | Ngôn ngữ | Cập nhật | Mô tả | Link |
-|------|--------|----------|--------|------|
-| Zalo-MiniApp | TypeScript | 2026-11-05 | Zalo Mini App - vote feature and future mini apps | [Link](https://github.com/HTL2910/Zalo-MiniApp) |
-| zalo-bot | TypeScript | 2026-11-04 | Zalo Bot | [Link](https://github.com/HTL2910/zalo-bot) |
-
----
-
-## 🌐 Web / Frontend
-
-| Repo | Ngôn ngữ | Mô tả | Link |
-|------|--------|--------|------|
-| SmartPhone-website | TypeScript | - | [Link](https://github.com/HTL2910/SmartPhone-website) |
-| React_web_gift | TypeScript | private gift for friend | [Link](https://github.com/HTL2910/React_web_gift) |
-| ALl_mockup_app | JavaScript | mockup for app demo | [Link](https://github.com/HTL2910/ALl_mockup_app) |
-| React-Native-Example | TypeScript | Learn React Native | [Link](https://github.com/HTL2910/React-Native-Example) |
-| bus_travel | HTML | Travel | [Link](https://github.com/HTL2910/bus_travel) |
-
----
-
-## 📊 Data / Tool / Khác
-
-- **MUSE-TOOL-VIDEO**: Independent Windows tool for Muse account management and image/video automation
-- **dola-render-gateway**
-- **Web-Scraping_Web-Crawling**
-- **FloorplanToQOC**: FloorplanToQOC predict
-- **Interview-Project**
-- **Power-BI**, **Misumi_data_Tool**
-- **Onepiece-Asset**, **create_model** (assets)
-- Profile: [HTL2910](https://github.com/HTL2910/HTL2910)
+| Repo | Language | Updated | Stars | Visibility | Description |
+|------|----------|---------|-------|------------|-------------|
+| [AWS-AI-chatbot](https://github.com/HTL2910/AWS-AI-chatbot) | TypeScript | 2026-11-04 | 0 | 🌐 |   SafeGraph AI - VS Code AI coding assistant with Amazon Bed |
+| [hypit](https://github.com/HTL2910/hypit) | - | 2026-10-05 | 0 | 🌐 | Clone any viral video with AI agents. Not just a script, the |
+| [Full-Stack-Data-Science---Machine-Learning-BootCamp-Course](https://github.com/HTL2910/Full-Stack-Data-Science---Machine-Learning-BootCamp-Course) | Jupyter Notebook | 2026-09-25 | 0 | 🌐 | Learn Udemy Full Stack Data Science & Machine Learning BootC |
+| [shorts](https://github.com/HTL2910/shorts) | Python | 2026-09-10 | 0 | 🌐 | 🎥 AI Youtube Shorts video generator using Gemini API for ima |
+| [JavaScript-Project](https://github.com/HTL2910/JavaScript-Project) | HTML | 2025-02-17 | 0 | 🌐 | Learn JavaScript |
 
 ---
 
-## 🚀 Cách sử dụng
+### Cách dùng
+- Fork repo này → Action sẽ tự động chạy và tạo dashboard của bạn.
+- Muốn thấy cả private repo: thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`).
 
-1. **Chủ sở hữu**: Quay lại sau lâu → đọc file này để nhớ lại mình đang làm gì, repo nào active, mục đích từng nhóm.
-2. **Khách tham quan**: Xem các project public để fork, học hỏi hoặc đóng góp.
-3. **Tương lai**: Sẽ thêm GitHub Action để tự động cập nhật danh sách này định kỳ.
-
----
-
-*Dashboard này được tạo để giải quyết vấn đề "quá nhiều repo, lâu ngày quên".*
+*Generated automatically by github-repos-dashboard*

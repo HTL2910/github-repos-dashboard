@@ -67,7 +67,7 @@
   </div>
 
   <div class="controls">
-    <input type="text" id="username" placeholder="GitHub username" value="HTL2910">
+    <input type="text" id="username" placeholder="Username hoặc link GitHub (vd: HTL2910 hoặc https://github.com/HTL2910)" value="HTL2910" style="min-width:280px;">
     <input type="password" id="token" placeholder="Token (tùy chọn - xem private)">
     <button onclick="loadRepos()">Tải Dashboard</button>
     <select id="filter" onchange="renderTable()">
@@ -110,6 +110,17 @@
     let catChart = null;
     let langChart = null;
     let network = null;
+
+    function extractUsername(input) {
+      if (!input) return "HTL2910";
+      input = input.trim();
+      // Handle full URL
+      const urlMatch = input.match(/github\.com\/([\w-]+)/i);
+      if (urlMatch) return urlMatch[1];
+      // Handle owner/repo format
+      if (input.includes("/")) return input.split("/")[0];
+      return input;
+    }
 
     function categorize(repo) {
       const text = ((repo.name || "") + " " + (repo.description || "") + " " + (repo.language || "")).toLowerCase();
@@ -263,17 +274,20 @@
     }
 
     async function loadRepos() {
-      const username = document.getElementById("username").value.trim() || "HTL2910";
+      let input = document.getElementById("username").value.trim();
+      const username = extractUsername(input);
+      document.getElementById("username").value = username; // normalize display
+
       const token = document.getElementById("token").value.trim();
       const status = document.getElementById("status");
-      status.textContent = "Đang tải...";
+      status.textContent = `Đang tải user: ${username}...`;
 
       const headers = { "Accept": "application/vnd.github+json" };
       if (token) headers["Authorization"] = `Bearer ${token}`;
 
       try {
         const userRes = await fetch(`https://api.github.com/users/${username}`, { headers });
-        if (!userRes.ok) throw new Error("Không tìm thấy user");
+        if (!userRes.ok) throw new Error(`Không tìm thấy user "${username}". Hãy nhập đúng username (vd: HTL2910)`);
         userProfile = await userRes.json();
 
         let repos = [];

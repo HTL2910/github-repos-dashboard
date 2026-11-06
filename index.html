@@ -21,7 +21,7 @@
     .chart-box { background: #0d1117; border-radius: 8px; padding: 12px; }
     .chart-box h4 { margin: 0 0 10px 0; text-align: center; font-size: 14px; }
     canvas { max-height: 220px; }
-    #knowledgeGraph { height: 420px; background: #0d1117; border-radius: 8px; border: 1px solid #30363d; }
+    #knowledgeGraph { height: 500px; background: #0d1117; border-radius: 8px; border: 1px solid #30363d; margin-top: 8px; }
     .skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     .skill { background: #238636; padding: 4px 10px; border-radius: 12px; font-size: 13px; }
     .controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
@@ -126,13 +126,18 @@
       return `${years} năm`;
     }
 
+    function fixUrl(url) {
+      if (!url) return "";
+      if (url.startsWith("http://") || url.startsWith("https://")) return url;
+      return "https://" + url;
+    }
+
     function updateKnowledgeGraph() {
       const nodes = [];
       const edges = [];
       const nodeIds = new Set();
 
-      // Center node
-      nodes.push({ id: "user", label: userProfile?.login || "User", color: "#58a6ff", size: 30, font: { color: "#fff" } });
+      nodes.push({ id: "user", label: userProfile?.login || "User", color: "#58a6ff", size: 35, font: { color: "#fff", size: 16 } });
       nodeIds.add("user");
 
       const cats = {};
@@ -142,25 +147,22 @@
         if (r.language) langs[r.language] = (langs[r.language] || 0) + 1;
       });
 
-      // Categories
       Object.keys(cats).forEach(cat => {
         const id = "cat_" + cat;
-        nodes.push({ id, label: cat, color: "#238636", size: 20 + cats[cat] * 2, font: { color: "#fff" } });
+        nodes.push({ id, label: cat, color: "#238636", size: 22 + cats[cat], font: { color: "#fff" } });
         edges.push({ from: "user", to: id });
         nodeIds.add(id);
       });
 
-      // Top languages
-      Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0, 8).forEach(([lang, count]) => {
+      Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0, 6).forEach(([lang, count]) => {
         const id = "lang_" + lang;
-        nodes.push({ id, label: lang, color: "#d29922", size: 15 + count, font: { color: "#fff" } });
+        nodes.push({ id, label: lang, color: "#d29922", size: 16 + count, font: { color: "#fff" } });
         nodeIds.add(id);
       });
 
-      // Top repos linked to their category and language
-      allRepos.slice(0, 15).forEach(r => {
+      allRepos.slice(0, 12).forEach(r => {
         const id = "repo_" + r.name;
-        nodes.push({ id, label: r.name, color: "#8957e5", size: 12, font: { color: "#fff", size: 12 } });
+        nodes.push({ id, label: r.name, color: "#8957e5", size: 14, font: { color: "#fff", size: 11 } });
         const catId = "cat_" + r.category;
         if (nodeIds.has(catId)) edges.push({ from: catId, to: id });
         if (r.language) {
@@ -172,12 +174,17 @@
       const container = document.getElementById("knowledgeGraph");
       const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
       const options = {
-        physics: { stabilization: true, barnesHut: { gravitationalConstant: -8000 } },
-        interaction: { hover: true, tooltipDelay: 100 },
-        nodes: { shape: "dot" }
+        physics: {
+          stabilization: { iterations: 150 },
+          barnesHut: { gravitationalConstant: -12000, springLength: 180 }
+        },
+        interaction: { hover: true, tooltipDelay: 100, navigationButtons: true },
+        nodes: { shape: "dot" },
+        layout: { improvedLayout: true }
       };
       if (network) network.destroy();
       network = new vis.Network(container, data, options);
+      setTimeout(() => network.fit(), 500);
     }
 
     function updateCharts() {
@@ -219,6 +226,7 @@
       if (!userProfile) return;
       const joinDate = userProfile.created_at ? new Date(userProfile.created_at).toLocaleDateString("vi-VN") : "-";
       const age = getAccountAge(userProfile.created_at);
+      const blogUrl = fixUrl(userProfile.blog);
 
       document.getElementById("profileHeader").innerHTML = `
         <img class="avatar" src="${userProfile.avatar_url}" alt="avatar">
@@ -236,7 +244,7 @@
         <div class="profile-item"><strong>Following</strong>${userProfile.following || 0}</div>
         <div class="profile-item"><strong>Company</strong>${userProfile.company || "-"}</div>
         <div class="profile-item"><strong>Location</strong>${userProfile.location || "-"}</div>
-        <div class="profile-item"><strong>Blog</strong>${userProfile.blog ? `<a href="${userProfile.blog}" target="_blank">${userProfile.blog}</a>` : "-"}</div>
+        <div class="profile-item"><strong>Blog</strong>${blogUrl ? `<a href="${blogUrl}" target="_blank">${userProfile.blog}</a>` : "-"}</div>
         <div class="profile-item"><strong>Twitter</strong>${userProfile.twitter_username ? `@${userProfile.twitter_username}` : "-"}</div>
       `;
 

@@ -10,7 +10,8 @@ from collections import defaultdict
 import base64
 
 OWNER = os.getenv("GITHUB_REPOSITORY_OWNER") or os.getenv("GITHUB_ACTOR") or "HTL2910"
-TOKEN = os.getenv("GITHUB_TOKEN") or os.getenv("PERSONAL_ACCESS_TOKEN")
+# Prefer personal token so we can write to the profile repo
+TOKEN = os.getenv("PERSONAL_ACCESS_TOKEN") or os.getenv("GITHUB_TOKEN")
 REPO_NAME = os.getenv("GITHUB_REPOSITORY", f"{OWNER}/github-repos-dashboard").split("/")[-1]
 
 HEADERS = {"Accept": "application/vnd.github+json"}
@@ -98,8 +99,8 @@ def generate_profile_readme(repos):
     return "\n".join(lines)
 
 def update_profile_readme(content: str):
-    if not TOKEN:
-        print("No PERSONAL_ACCESS_TOKEN, skip profile update")
+    if not os.getenv("PERSONAL_ACCESS_TOKEN"):
+        print("No PERSONAL_ACCESS_TOKEN set, skip profile update")
         return
     url = f"https://api.github.com/repos/{OWNER}/{OWNER}/contents/README.md"
     resp = requests.get(url, headers=HEADERS)
@@ -185,6 +186,7 @@ def generate_readme(repos):
 
 if __name__ == "__main__":
     print(f"Generating dashboard for: {OWNER}")
+    print(f"Using personal token: {bool(os.getenv('PERSONAL_ACCESS_TOKEN'))}")
     repos = get_repos(OWNER)
     print(f"Found {len(repos)} repositories")
 

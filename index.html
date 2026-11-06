@@ -4,15 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GitHub Repos Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #0d1117; color: #e6edf3; }
     h1 { margin-bottom: 5px; }
     .subtitle { color: #8b949e; margin-bottom: 15px; }
     .profile-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
     .profile-box h3 { margin: 0 0 10px 0; }
-    .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px; }
+    .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 12px; }
     .profile-item { background: #0d1117; padding: 8px 12px; border-radius: 6px; }
     .profile-item strong { display: block; color: #8b949e; font-size: 12px; }
+    .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0; }
+    .chart-box { background: #0d1117; border-radius: 8px; padding: 12px; }
+    .chart-box h4 { margin: 0 0 10px 0; text-align: center; font-size: 14px; }
+    canvas { max-height: 220px; }
     .skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     .skill { background: #238636; padding: 4px 10px; border-radius: 12px; font-size: 13px; }
     .controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
@@ -29,15 +34,26 @@
     .public { background: #238636; }
     .status { margin: 10px 0; color: #8b949e; }
     .commit { font-size: 12px; color: #8b949e; margin-top: 4px; }
+    @media (max-width: 700px) { .charts { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <h1>📊 GitHub Repos Dashboard</h1>
-  <p class="subtitle">Nhìn phát là nắm được người này tham gia khi nào, làm gì, chuyên môn ra sao, đang active những gì.</p>
+  <p class="subtitle">Nhìn biểu đồ + danh sách là nắm ngay người này làm gì, chuyên môn ra sao.</p>
 
   <div class="profile-box" id="profileBox" style="display:none;">
     <h3>👤 Hồ sơ & Lịch sử hoạt động</h3>
     <div class="profile-grid" id="profileGrid"></div>
+    <div class="charts">
+      <div class="chart-box">
+        <h4>Phân bố theo nhóm</h4>
+        <canvas id="catChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h4>Ngôn ngữ hay dùng</h4>
+        <canvas id="langChart"></canvas>
+      </div>
+    </div>
     <div id="skillSummary"></div>
   </div>
 
@@ -80,6 +96,8 @@
   <script>
     let allRepos = [];
     let userProfile = null;
+    let catChart = null;
+    let langChart = null;
 
     function categorize(repo) {
       const text = ((repo.name || "") + " " + (repo.description || "") + " " + (repo.language || "")).toLowerCase();
@@ -90,15 +108,44 @@
       return "Other";
     }
 
-    function updateProfile() {
-      if (!userProfile) return;
-      const joinDate = userProfile.created_at ? new Date(userProfile.created_at).toLocaleDateString("vi-VN") : "-";
+    function updateCharts() {
       const counts = {};
       allRepos.forEach(r => { counts[r.category] = (counts[r.category] || 0) + 1; });
       const langs = {};
       allRepos.forEach(r => { if (r.language) langs[r.language] = (langs[r.language] || 0) + 1; });
-      const topLangs = Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([l,c]) => `${l} (${c})`);
-      const topCats = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+
+      const catLabels = Object.keys(counts);
+      const catData = Object.values(counts);
+      const langEntries = Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0, 6);
+      const langLabels = langEntries.map(e => e[0]);
+      const langData = langEntries.map(e => e[1]);
+
+      const colors = ["#238636", "#1f6feb", "#da3633", "#d29922", "#8957e5", "#8b949e"];
+
+      if (catChart) catChart.destroy();
+      catChart = new Chart(document.getElementById("catChart"), {
+        type: "doughnut",
+        data: { labels: catLabels, datasets: [{ data: catData, backgroundColor: colors }] },
+        options: { plugins: { legend: { position: "bottom", labels: { color: "#e6edf3" } } } }
+      });
+
+      if (langChart) langChart.destroy();
+      langChart = new Chart(document.getElementById("langChart"), {
+        type: "bar",
+        data: { labels: langLabels, datasets: [{ data: langData, backgroundColor: "#1f6feb" }] },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { ticks: { color: "#8b949e" }, grid: { color: "#21262d" } },
+            x: { ticks: { color: "#e6edf3" }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function updateProfile() {
+      if (!userProfile) return;
+      const joinDate = userProfile.created_at ? new Date(userProfile.created_at).toLocaleDateString("vi-VN") : "-";
 
       document.getElementById("profileGrid").innerHTML = `
         <div class="profile-item"><strong>Tham gia</strong>${joinDate}</div>
@@ -107,12 +154,17 @@
         <div class="profile-item"><strong>Tổng repo hiển thị</strong>${allRepos.length}</div>
       `;
 
+      const langs = {};
+      allRepos.forEach(r => { if (r.language) langs[r.language] = (langs[r.language] || 0) + 1; });
+      const topLangs = Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([l,c]) => `${l} (${c})`);
+
       document.getElementById("skillSummary").innerHTML = `
-        <div><strong>Nhóm chính:</strong> ${topCats.map(([c,n]) => `${c} (${n})`).join(" · ")}</div>
-        <div style="margin-top:6px;"><strong>Kỹ năng / Ngôn ngữ:</strong></div>
+        <div><strong>Kỹ năng / Ngôn ngữ:</strong></div>
         <div class="skills">${topLangs.map(l => `<span class="skill">${l}</span>`).join("") || "-"}</div>
         ${userProfile.bio ? `<div style="margin-top:10px;"><strong>Bio:</strong> ${userProfile.bio}</div>` : ""}
       `;
+
+      updateCharts();
       document.getElementById("profileBox").style.display = "block";
     }
 
@@ -126,11 +178,9 @@
       if (token) headers["Authorization"] = `Bearer ${token}`;
 
       try {
-        // Load user profile
         const userRes = await fetch(`https://api.github.com/users/${username}`, { headers });
         if (userRes.ok) userProfile = await userRes.json();
 
-        // Load repos
         let repos = [];
         let page = 1;
         while (page <= 5) {
@@ -143,7 +193,7 @@
         }
 
         const withHistory = [];
-        for (const r of repos.slice(0, 30)) {
+        for (const r of repos.slice(0, 25)) {
           let lastCommit = "-";
           try {
             const cRes = await fetch(`https://api.github.com/repos/${username}/${r.name}/commits?per_page=1`, { headers });
@@ -158,7 +208,7 @@
           } catch {}
           withHistory.push({ ...r, category: categorize(r), lastCommit });
         }
-        for (const r of repos.slice(30)) {
+        for (const r of repos.slice(25)) {
           withHistory.push({ ...r, category: categorize(r), lastCommit: "-" });
         }
 

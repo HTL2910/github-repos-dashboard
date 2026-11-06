@@ -1,10 +1,16 @@
 # 📊 GitHub Repos Dashboard - HTL2910
 
-[![Run Workflow](https://img.shields.io/badge/🚀_Cập_nhật_Dashboard-blue?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
+## 🚀 Quick Actions
 
-> Workflow này sẽ cập nhật cả **profile README** của bạn (nếu có token).
+[![Get Token](https://img.shields.io/badge/🔑_Get_Personal_Access_Token-orange?style=for-the-badge)](https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard)
 
-**Cập nhật**: 2026-11-06 05:18 UTC  
+[![Update Profile](https://img.shields.io/badge/✅_Update_Profile_README-success?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
+
+> **Bước 1**: Bấm nút Get Token → tạo token (scope `repo`)  
+> **Bước 2**: Vào [Secrets](https://github.com/HTL2910/github-repos-dashboard/settings/secrets/actions) → thêm secret tên `PERSONAL_ACCESS_TOKEN`  
+> **Bước 3**: Bấm nút Update Profile README
+
+**Cập nhật**: 2026-11-06 05:25 UTC  
 **Tổng**: 33 repos (0 private / 33 public)
 
 ---
@@ -63,8 +69,5 @@
 | [JavaScript-Project](https://github.com/HTL2910/JavaScript-Project) | HTML | 2025-02-17 | 0 | 🌐 | Learn JavaScript |
 
 ---
-
-### Muốn cập nhật profile README?
-Thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`) rồi chạy workflow.
 
 *Generated automatically*

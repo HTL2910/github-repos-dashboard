@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GitHub Repos Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
   <style>
     body { font-family: system-ui, -apple-system, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #0d1117; color: #e6edf3; }
     h1 { margin-bottom: 5px; }
@@ -20,6 +21,7 @@
     .chart-box { background: #0d1117; border-radius: 8px; padding: 12px; }
     .chart-box h4 { margin: 0 0 10px 0; text-align: center; font-size: 14px; }
     canvas { max-height: 220px; }
+    #knowledgeGraph { height: 420px; background: #0d1117; border-radius: 8px; border: 1px solid #30363d; }
     .skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     .skill { background: #238636; padding: 4px 10px; border-radius: 12px; font-size: 13px; }
     .controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
@@ -41,7 +43,7 @@
 </head>
 <body>
   <h1>📊 GitHub Repos Dashboard</h1>
-  <p class="subtitle">Xem đầy đủ thông tin user + biểu đồ + danh sách repo.</p>
+  <p class="subtitle">Xem đầy đủ thông tin user + biểu đồ + knowledge graph + danh sách repo.</p>
 
   <div class="profile-box" id="profileBox" style="display:none;">
     <h3>👤 Hồ sơ chi tiết</h3>
@@ -56,6 +58,10 @@
         <h4>Ngôn ngữ hay dùng</h4>
         <canvas id="langChart"></canvas>
       </div>
+    </div>
+    <div>
+      <h4 style="margin:15px 0 8px 0;">🧠 Knowledge Graph (Kỹ năng ↔ Nhóm ↔ Repo)</h4>
+      <div id="knowledgeGraph"></div>
     </div>
     <div id="skillSummary"></div>
   </div>
@@ -103,6 +109,7 @@
     let userProfile = null;
     let catChart = null;
     let langChart = null;
+    let network = null;
 
     function categorize(repo) {
       const text = ((repo.name || "") + " " + (repo.description || "") + " " + (repo.language || "")).toLowerCase();
@@ -117,6 +124,60 @@
       if (!createdAt) return "-";
       const years = ((Date.now() - new Date(createdAt)) / (1000 * 60 * 60 * 24 * 365)).toFixed(1);
       return `${years} năm`;
+    }
+
+    function updateKnowledgeGraph() {
+      const nodes = [];
+      const edges = [];
+      const nodeIds = new Set();
+
+      // Center node
+      nodes.push({ id: "user", label: userProfile?.login || "User", color: "#58a6ff", size: 30, font: { color: "#fff" } });
+      nodeIds.add("user");
+
+      const cats = {};
+      const langs = {};
+      allRepos.forEach(r => {
+        cats[r.category] = (cats[r.category] || 0) + 1;
+        if (r.language) langs[r.language] = (langs[r.language] || 0) + 1;
+      });
+
+      // Categories
+      Object.keys(cats).forEach(cat => {
+        const id = "cat_" + cat;
+        nodes.push({ id, label: cat, color: "#238636", size: 20 + cats[cat] * 2, font: { color: "#fff" } });
+        edges.push({ from: "user", to: id });
+        nodeIds.add(id);
+      });
+
+      // Top languages
+      Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0, 8).forEach(([lang, count]) => {
+        const id = "lang_" + lang;
+        nodes.push({ id, label: lang, color: "#d29922", size: 15 + count, font: { color: "#fff" } });
+        nodeIds.add(id);
+      });
+
+      // Top repos linked to their category and language
+      allRepos.slice(0, 15).forEach(r => {
+        const id = "repo_" + r.name;
+        nodes.push({ id, label: r.name, color: "#8957e5", size: 12, font: { color: "#fff", size: 12 } });
+        const catId = "cat_" + r.category;
+        if (nodeIds.has(catId)) edges.push({ from: catId, to: id });
+        if (r.language) {
+          const langId = "lang_" + r.language;
+          if (nodeIds.has(langId)) edges.push({ from: id, to: langId });
+        }
+      });
+
+      const container = document.getElementById("knowledgeGraph");
+      const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+      const options = {
+        physics: { stabilization: true, barnesHut: { gravitationalConstant: -8000 } },
+        interaction: { hover: true, tooltipDelay: 100 },
+        nodes: { shape: "dot" }
+      };
+      if (network) network.destroy();
+      network = new vis.Network(container, data, options);
     }
 
     function updateCharts() {
@@ -189,6 +250,7 @@
       `;
 
       updateCharts();
+      updateKnowledgeGraph();
       document.getElementById("profileBox").style.display = "block";
     }
 

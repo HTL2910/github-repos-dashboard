@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
 Generate GitHub repos dashboard for the current repository owner.
-Works for both the original owner and anyone who forks the repo.
+Also tries to update the user's profile README (username/username).
 """
 import os
 import requests
 from datetime import datetime
 from collections import defaultdict
+import base64
 
 OWNER = os.getenv("GITHUB_REPOSITORY_OWNER") or os.getenv("GITHUB_ACTOR") or "HTL2910"
 TOKEN = os.getenv("GITHUB_TOKEN") or os.getenv("PERSONAL_ACCESS_TOKEN")
@@ -24,7 +25,7 @@ def get_repos(username: str):
         params = {"per_page": 100, "page": page, "sort": "updated", "type": "owner"}
         resp = requests.get(url, headers=HEADERS, params=params)
         if resp.status_code != 200:
-            print(f"Error fetching repos: {resp.status_code} - {resp.text}")
+            print(f"Error fetching repos: {resp.status_code}")
             break
         data = resp.json()
         if not data:
@@ -51,6 +52,76 @@ def categorize(repo):
         return "🌐 Web / Frontend"
     return "📁 Other"
 
+def generate_profile_readme(repos):
+    now = datetime.utcnow().strftime("%Y-%m-%d")
+    total = len(repos)
+    langs = {}
+    for r in repos:
+        if r.get("language"):
+            langs[r["language"]] = langs.get(r["language"], 0) + 1
+    top_langs = sorted(langs.items(), key=lambda x: -x[1])[:5]
+    lang_badges = " ".join([f"`{l}`" for l, _ in top_langs])
+
+    lines = [
+        "<div align=\"center\">",
+        "",
+        f"# {OWNER}",
+        "",
+        f"**Repos Dashboard** — tự động cập nhật",
+        "",
+        f"[![Dashboard](https://img.shields.io/badge/📊_Xem_chi_tiết-blue?style=for-the-badge)](https://{OWNER}.github.io/{REPO_NAME}/)",
+        "",
+        "</div>",
+        "",
+        "---",
+        "",
+        f"**Tổng**: {total} repos  ",
+        f"**Ngôn ngữ chính**: {lang_badges or '-'}  ",
+        f"**Cập nhật**: {now}",
+        "",
+        "### Nhóm chính",
+        ""
+    ]
+
+    groups = defaultdict(int)
+    for r in repos:
+        groups[categorize(r)] += 1
+    for cat, count in sorted(groups.items(), key=lambda x: -x[1]):
+        lines.append(f"- {cat}: **{count}**")
+
+    lines.extend([
+        "",
+        "---",
+        "",
+        f"*Profile được tự động cập nhật từ [{REPO_NAME}](https://github.com/{OWNER}/{REPO_NAME})*"
+    ])
+    return "\n".join(lines)
+
+def update_profile_readme(content: str):
+    if not TOKEN:
+        print("No token, skip profile update")
+        return
+    # Get current file sha if exists
+    url = f"https://api.github.com/repos/{OWNER}/{OWNER}/contents/README.md"
+    resp = requests.get(url, headers=HEADERS)
+    sha = None
+    if resp.status_code == 200:
+        sha = resp.json().get("sha")
+
+    payload = {
+        "message": "chore: auto-update profile dashboard",
+        "content": base64.b64encode(content.encode()).decode(),
+        "branch": "main"
+    }
+    if sha:
+        payload["sha"] = sha
+
+    put = requests.put(url, headers=HEADERS, json=payload)
+    if put.status_code in (200, 201):
+        print("Profile README updated")
+    else:
+        print(f"Profile update failed: {put.status_code} - {put.text[:200]}")
+
 def generate_readme(repos):
     now = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
     total = len(repos)
@@ -58,21 +129,14 @@ def generate_readme(repos):
     public = total - private
 
     workflow_url = f"https://github.com/{OWNER}/{REPO_NAME}/actions/workflows/update-dashboard.yml"
-    pages_settings_url = f"https://github.com/{OWNER}/{REPO_NAME}/settings/pages"
     pages_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
 
     lines = [
         f"# 📊 GitHub Repos Dashboard - {OWNER}",
         "",
-        "## 🚀 Bật dashboard (1 click)",
+        f"[![Run Workflow](https://img.shields.io/badge/🚀_Cập_nhật_Dashboard-blue?style=for-the-badge)]({workflow_url})",
         "",
-        f"[![Bật GitHub Pages](https://img.shields.io/badge/🔧_Bật_GitHub_Pages-green?style=for-the-badge)]({pages_settings_url})",
-        "",
-        f"Sau khi bấm nút trên → chọn **Deploy from a branch** → `main` / `(root)` → **Save**",
-        "",
-        f"**Dashboard**: [{pages_url}]({pages_url})",
-        "",
-        f"[![Cập nhật README](https://img.shields.io/badge/🚀_Cập_nhật_README-blue?style=for-the-badge)]({workflow_url})",
+        f"> Workflow này sẽ cập nhật cả **profile README** của bạn (nếu có token).",
         "",
         f"**Cập nhật**: {now}  ",
         f"**Tổng**: {total} repos ({private} private / {public} public)",
@@ -104,8 +168,8 @@ def generate_readme(repos):
     lines.extend([
         "---",
         "",
-        "### Muốn thấy private repo?",
-        "Thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`) rồi bấm nút Run Workflow.",
+        "### Muốn cập nhật profile README?",
+        "Thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`) rồi chạy workflow.",
         "",
         "*Generated automatically*"
     ])
@@ -115,7 +179,13 @@ if __name__ == "__main__":
     print(f"Generating dashboard for: {OWNER}")
     repos = get_repos(OWNER)
     print(f"Found {len(repos)} repositories")
+
+    # Update local README
     readme = generate_readme(repos)
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme)
     print("README.md updated")
+
+    # Try update profile README
+    profile_content = generate_profile_readme(repos)
+    update_profile_readme(profile_content)

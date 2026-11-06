@@ -1,16 +1,20 @@
 # 📊 GitHub Repos Dashboard - HTL2910
 
-## 🚀 Quick Actions
+## 🚀 3 Nút quan trọng
 
-[![Get Token](https://img.shields.io/badge/🔑_Get_Personal_Access_Token-orange?style=for-the-badge)](https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard)
+[![1. Get Token](https://img.shields.io/badge/1._Get_Personal_Access_Token-orange?style=for-the-badge)](https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard)
 
-[![Update Profile](https://img.shields.io/badge/✅_Update_Profile_README-success?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
+[![2. Add Secret](https://img.shields.io/badge/2._Add_Secret_PERSONAL_ACCESS_TOKEN-yellow?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/settings/secrets/actions)
 
-> **Bước 1**: Bấm nút Get Token → tạo token (scope `repo`)  
-> **Bước 2**: Vào [Secrets](https://github.com/HTL2910/github-repos-dashboard/settings/secrets/actions) → thêm secret tên `PERSONAL_ACCESS_TOKEN`  
-> **Bước 3**: Bấm nút Update Profile README
+[![3. Update Profile](https://img.shields.io/badge/3._Update_Profile_README-success?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
 
-**Cập nhật**: 2026-11-06 05:25 UTC  
+> **Bước 1** → Tạo token (chọn scope `repo`)  
+> **Bước 2** → Thêm secret tên đúng `PERSONAL_ACCESS_TOKEN`  
+> **Bước 3** → Chạy workflow để cập nhật profile
+
+**Dashboard web**: [https://HTL2910.github.io/github-repos-dashboard/](https://HTL2910.github.io/github-repos-dashboard/)
+
+**Cập nhật**: 2026-11-06 05:54 UTC  
 **Tổng**: 33 repos (0 private / 33 public)
 
 ---

@@ -58,14 +58,19 @@ def generate_readme(repos):
     public = total - private
 
     workflow_url = f"https://github.com/{OWNER}/{REPO_NAME}/actions/workflows/update-dashboard.yml"
+    pages_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
 
     lines = [
         f"# 📊 GitHub Repos Dashboard - {OWNER}",
         "",
-        f"[![Run Workflow](https://img.shields.io/badge/🚀_Chạy_Dashboard-blue?style=for-the-badge)]({workflow_url})",
+        "## 🚀 Cách dùng sau khi fork (1–2 click)",
         "",
-        "> **Bấm nút trên để cập nhật dashboard ngay** (1 click).",
-        "> Fork repo này về là dùng được cho account của bạn.",
+        "1. Vào **Settings → Pages** → chọn **Deploy from a branch** → `main` / `(root)` → **Save**",
+        f"2. Mở dashboard: **[{pages_url}]({pages_url})**",
+        "",
+        f"[![Run Workflow](https://img.shields.io/badge/🚀_Cập_nhật_README-blue?style=for-the-badge)]({workflow_url})",
+        "",
+        "> Bấm nút trên nếu muốn cập nhật bảng tổng hợp trong README này.",
         "",
         f"**Cập nhật**: {now}  ",
         f"**Tổng**: {total} repos ({private} private / {public} public)",

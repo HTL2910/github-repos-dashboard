@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Repos Dashboard</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 1100px; margin: 0 auto; padding: 20px; background: #0d1117; color: #e6edf3; }
+    h1 { margin-bottom: 5px; }
+    .subtitle { color: #8b949e; margin-bottom: 20px; }
+    .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    input, select, button { padding: 8px 12px; border-radius: 6px; border: 1px solid #30363d; background: #161b22; color: #e6edf3; }
+    button { cursor: pointer; background: #238636; border-color: #238636; }
+    button:hover { background: #2ea043; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #21262d; }
+    th { background: #161b22; }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; }
+    .private { background: #da3633; }
+    .public { background: #238636; }
+    .status { margin: 10px 0; color: #8b949e; }
+  </style>
+</head>
+<body>
+  <h1>📊 GitHub Repos Dashboard</h1>
+  <p class="subtitle">Dashboard nhanh cho toàn bộ repo của bạn. Fork repo này và bật GitHub Pages để dùng.</p>
+
+  <div class="controls">
+    <input type="text" id="username" placeholder="GitHub username (mặc định là owner repo)" value="">
+    <input type="password" id="token" placeholder="Personal Access Token (tùy chọn, để xem private)">
+    <button onclick="loadRepos()">Tải Dashboard</button>
+    <select id="filter" onchange="renderTable()">
+      <option value="all">Tất cả</option>
+      <option value="Unity / Game">Unity / Game</option>
+      <option value="AI / ML">AI / ML</option>
+      <option value="Bot / Mini App">Bot / Mini App</option>
+      <option value="Web / Frontend">Web / Frontend</option>
+      <option value="Other">Khác</option>
+    </select>
+    <input type="text" id="search" placeholder="Tìm kiếm..." oninput="renderTable()">
+  </div>
+
+  <div class="status" id="status">Nhập username rồi bấm Tải Dashboard</div>
+  <table id="table">
+    <thead>
+      <tr><th>Repo</th><th>Language</th><th>Updated</th><th>Stars</th><th>Visibility</th><th>Description</th></tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+
+  <script>
+    let allRepos = [];
+
+    function categorize(repo) {
+      const text = ((repo.name || "") + " " + (repo.description || "") + " " + (repo.language || "")).toLowerCase();
+      if (text.includes("unity") || text.includes("game") || text.includes("shader")) return "Unity / Game";
+      if (text.includes("ai") || text.includes("ml") || text.includes("learning") || text.includes("gpt")) return "AI / ML";
+      if (text.includes("zalo") || text.includes("bot") || text.includes("miniapp")) return "Bot / Mini App";
+      if (text.includes("react") || text.includes("web") || text.includes("frontend")) return "Web / Frontend";
+      return "Other";
+    }
+
+    async function loadRepos() {
+      const username = document.getElementById("username").value.trim() || "HTL2910";
+      const token = document.getElementById("token").value.trim();
+      const status = document.getElementById("status");
+      status.textContent = "Đang tải...";
+
+      const headers = { "Accept": "application/vnd.github+json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+
+      try {
+        let repos = [];
+        let page = 1;
+        while (page <= 5) {
+          const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&page=${page}&sort=updated&type=owner`, { headers });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          if (!data.length) break;
+          repos = repos.concat(data);
+          page++;
+        }
+        allRepos = repos.map(r => ({ ...r, category: categorize(r) }));
+        status.textContent = `Đã tải ${allRepos.length} repo của ${username}`;
+        renderTable();
+      } catch (e) {
+        status.textContent = "Lỗi: " + e.message + " (kiểm tra username hoặc token)";
+      }
+    }
+
+    function renderTable() {
+      const filter = document.getElementById("filter").value;
+      const search = document.getElementById("search").value.toLowerCase();
+      const tbody = document.getElementById("tbody");
+      tbody.innerHTML = "";
+
+      const filtered = allRepos.filter(r => {
+        if (filter !== "all" && r.category !== filter) return false;
+        const text = (r.name + " " + (r.description || "")).toLowerCase();
+        return text.includes(search);
+      });
+
+      filtered.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><a href="${r.html_url}" target="_blank">${r.name}</a></td>
+          <td>${r.language || "-"}</td>
+          <td>${(r.updated_at || "").slice(0, 10)}</td>
+          <td>${r.stargazers_count || 0}</td>
+          <td><span class="badge ${r.private ? "private" : "public"}">${r.private ? "Private" : "Public"}</span></td>
+          <td>${(r.description || "-").slice(0, 80)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Auto-fill username from current repo owner if possible
+    document.getElementById("username").value = "HTL2910";
+  </script>
+</body>
+</html>

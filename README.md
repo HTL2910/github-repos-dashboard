@@ -1,16 +1,10 @@
 # 📊 GitHub Repos Dashboard - HTL2910
 
-## 🚀 Bật dashboard (1 click)
+[![Run Workflow](https://img.shields.io/badge/🚀_Cập_nhật_Dashboard-blue?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
 
-[![Bật GitHub Pages](https://img.shields.io/badge/🔧_Bật_GitHub_Pages-green?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/settings/pages)
+> Workflow này sẽ cập nhật cả **profile README** của bạn (nếu có token).
 
-Sau khi bấm nút trên → chọn **Deploy from a branch** → `main` / `(root)` → **Save**
-
-**Dashboard**: [https://HTL2910.github.io/github-repos-dashboard/](https://HTL2910.github.io/github-repos-dashboard/)
-
-[![Cập nhật README](https://img.shields.io/badge/🚀_Cập_nhật_README-blue?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
-
-**Cập nhật**: 2026-11-06 05:14 UTC  
+**Cập nhật**: 2026-11-06 05:18 UTC  
 **Tổng**: 33 repos (0 private / 33 public)
 
 ---
@@ -47,6 +41,7 @@ Sau khi bấm nút trên → chọn **Deploy from a branch** → `main` / `(root
 
 | Repo | Language | Updated | Stars | Visibility | Description |
 |------|----------|---------|-------|------------|-------------|
+| [HTL2910](https://github.com/HTL2910/HTL2910) | - | 2026-11-06 | 0 | 🌐 | Config files for my GitHub profile. |
 | [bang-cards-deck](https://github.com/HTL2910/bang-cards-deck) | TypeScript | 2026-11-01 | 0 | 🌐 | - |
 | [Wocel](https://github.com/HTL2910/Wocel) | C# | 2026-10-08 | 0 | 🌐 | - |
 | [Interview-Project](https://github.com/HTL2910/Interview-Project) | Python | 2026-07-30 | 0 | 🌐 | Interview Job test |
@@ -55,7 +50,6 @@ Sau khi bấm nút trên → chọn **Deploy from a branch** → `main` / `(root
 | [OpenCV-with-Python](https://github.com/HTL2910/OpenCV-with-Python) | Python | 2024-11-13 | 0 | 🌐 | OpenCV with Python:Recognition,Detection |
 | [Power-BI](https://github.com/HTL2910/Power-BI) | - | 2024-08-21 | 0 | 🌐 | Hoc Power BI |
 | [Graph-based-recommend-system-using-GNN](https://github.com/HTL2910/Graph-based-recommend-system-using-GNN) | Jupyter Notebook | 2024-07-26 | 0 | 🌐 | Đồ án tốt nghiệp |
-| [HTL2910](https://github.com/HTL2910/HTL2910) | - | 2022-01-23 | 0 | 🌐 | Config files for my GitHub profile. |
 
 ## 🤖 AI / ML (6)
 
@@ -70,7 +64,7 @@ Sau khi bấm nút trên → chọn **Deploy from a branch** → `main` / `(root
 
 ---
 
-### Muốn thấy private repo?
-Thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`) rồi bấm nút Run Workflow.
+### Muốn cập nhật profile README?
+Thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`) rồi chạy workflow.
 
 *Generated automatically*

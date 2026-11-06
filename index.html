@@ -86,7 +86,7 @@
     <input type="text" id="search" placeholder="Tìm kiếm..." oninput="renderTable()">
   </div>
 
-  <div class="status" id="status">Đang tự động nhận diện user...</div>
+  <div class="status" id="status">Đang tự động tải...</div>
   <table id="table">
     <thead>
       <tr>
@@ -111,10 +111,8 @@
     let langChart = null;
     let network = null;
 
-    // Auto-detect username from GitHub Pages hostname
     function detectUsername() {
       const host = window.location.hostname;
-      // Pattern: username.github.io
       if (host.endsWith(".github.io")) {
         return host.replace(".github.io", "");
       }
@@ -285,7 +283,7 @@
       let input = document.getElementById("username").value.trim();
       const username = extractUsername(input);
       if (!username) {
-        document.getElementById("status").textContent = "Không tự động nhận diện được username. Hãy nhập thủ công.";
+        document.getElementById("status").textContent = "Không nhận diện được username. Hãy nhập thủ công.";
         return;
       }
       document.getElementById("username").value = username;
@@ -299,14 +297,17 @@
 
       try {
         const userRes = await fetch(`https://api.github.com/users/${username}`, { headers });
-        if (!userRes.ok) throw new Error(`Không tìm thấy user "${username}"`);
+        if (!userRes.ok) {
+          const errText = await userRes.text();
+          throw new Error(`API lỗi ${userRes.status}: ${errText.slice(0, 200)}`);
+        }
         userProfile = await userRes.json();
 
         let repos = [];
         let page = 1;
         while (page <= 5) {
           const res = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&page=${page}&sort=updated&type=owner`, { headers });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          if (!res.ok) throw new Error(`Repos HTTP ${res.status}`);
           const data = await res.json();
           if (!data.length) break;
           repos = repos.concat(data);
@@ -314,7 +315,7 @@
         }
 
         const withHistory = [];
-        for (const r of repos.slice(0, 20)) {
+        for (const r of repos.slice(0, 15)) {
           let lastCommit = "-";
           try {
             const cRes = await fetch(`https://api.github.com/repos/${username}/${r.name}/commits?per_page=1`, { headers });
@@ -329,7 +330,7 @@
           } catch {}
           withHistory.push({ ...r, category: categorize(r), lastCommit });
         }
-        for (const r of repos.slice(20)) {
+        for (const r of repos.slice(15)) {
           withHistory.push({ ...r, category: categorize(r), lastCommit: "-" });
         }
 
@@ -379,12 +380,12 @@
       });
     }
 
-    // Auto-load on page open
+    // Auto-load
     window.addEventListener("DOMContentLoaded", () => {
       const detected = detectUsername();
       if (detected) {
         document.getElementById("username").value = detected;
-        loadRepos();
+        setTimeout(loadRepos, 300);
       } else {
         document.getElementById("status").textContent = "Hãy nhập username rồi bấm Tải Dashboard";
       }

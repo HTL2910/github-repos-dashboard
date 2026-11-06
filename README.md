@@ -1,9 +1,11 @@
 # 📊 GitHub Repos Dashboard - HTL2910
 
-> Dashboard tự động tổng hợp tất cả repository của user hiện tại.
-> Khi fork repo này, nó sẽ tự động lấy data của **bạn**.
+[![Run Workflow](https://img.shields.io/badge/🚀_Chạy_Dashboard-blue?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
 
-**Cập nhật**: 2026-11-06 04:25 UTC  
+> **Bấm nút trên để cập nhật dashboard ngay** (1 click).
+> Fork repo này về là dùng được cho account của bạn.
+
+**Cập nhật**: 2026-11-06 04:28 UTC  
 **Tổng**: 33 repos (0 private / 33 public)
 
 ---
@@ -63,8 +65,7 @@
 
 ---
 
-### Cách dùng
-- Fork repo này → Action sẽ tự động chạy và tạo dashboard của bạn.
-- Muốn thấy cả private repo: thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`).
+### Muốn thấy private repo?
+Thêm Secret `PERSONAL_ACCESS_TOKEN` (PAT có scope `repo`) rồi bấm nút Run Workflow.
 
-*Generated automatically by github-repos-dashboard*
+*Generated automatically*

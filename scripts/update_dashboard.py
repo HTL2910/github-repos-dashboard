@@ -40,6 +40,18 @@ TOPIC_MAP = {
     "web": "🌐 Web / Frontend",
 }
 
+# Language → Category mapping
+LANGUAGE_MAP = {
+    "c#": "🎮 Unity / Game",
+    "shaderlab": "🎮 Unity / Game",
+    "python": "🤖 AI / ML",
+    "jupyter notebook": "🤖 AI / ML",
+    "html": "🌐 Web / Frontend",
+    "css": "🌐 Web / Frontend",
+    "javascript": "🌐 Web / Frontend",
+    "typescript": "🌐 Web / Frontend",
+}
+
 def get_repos(username: str):
     repos = []
     page = 1
@@ -66,10 +78,14 @@ def categorize(repo):
         if topic in TOPIC_MAP:
             return TOPIC_MAP[topic]
 
-    # 2. Fallback to keyword matching
+    # 2. Language-based
+    lang = (repo.get("language") or "").lower()
+    if lang in LANGUAGE_MAP:
+        return LANGUAGE_MAP[lang]
+
+    # 3. Fallback to keyword matching
     name = (repo.get("name") or "").lower()
     desc = (repo.get("description") or "").lower()
-    lang = (repo.get("language") or "").lower()
     text = f"{name} {desc} {lang}"
 
     if any(k in text for k in ["unity", "game", "shader", "metroidvania", "platformer"]):

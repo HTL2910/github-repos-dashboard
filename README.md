@@ -1,11 +1,15 @@
 # 📊 GitHub Repos Dashboard - HTL2910
 
-[![Run Workflow](https://img.shields.io/badge/🚀_Chạy_Dashboard-blue?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
+## 🚀 Cách dùng sau khi fork (1–2 click)
 
-> **Bấm nút trên để cập nhật dashboard ngay** (1 click).
-> Fork repo này về là dùng được cho account của bạn.
+1. Vào **Settings → Pages** → chọn **Deploy from a branch** → `main` / `(root)` → **Save**
+2. Mở dashboard: **[https://HTL2910.github.io/github-repos-dashboard/](https://HTL2910.github.io/github-repos-dashboard/)**
 
-**Cập nhật**: 2026-11-06 04:58 UTC  
+[![Run Workflow](https://img.shields.io/badge/🚀_Cập_nhật_README-blue?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
+
+> Bấm nút trên nếu muốn cập nhật bảng tổng hợp trong README này.
+
+**Cập nhật**: 2026-11-06 05:03 UTC  
 **Tổng**: 33 repos (0 private / 33 public)
 
 ---

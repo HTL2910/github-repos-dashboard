@@ -1,0 +1,28 @@
+name: Update Repos Dashboard
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # Every Monday at 00:00 UTC
+  workflow_dispatch:     # Allow manual trigger
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update README with latest repos
+        run: |
+          echo "# Auto-update placeholder" >> README.md
+          echo "This workflow can be extended with a script to fetch all repos via GitHub API and regenerate the overview." >> README.md
+          # TODO: Add Python script using GITHUB_TOKEN to list repos and rebuild README
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git diff --staged --quiet || git commit -m "chore: auto-update dashboard [skip ci]"
+          git push

@@ -18,6 +18,28 @@ HEADERS = {"Accept": "application/vnd.github+json"}
 if TOKEN:
     HEADERS["Authorization"] = f"Bearer {TOKEN}"
 
+# Topic → Category mapping
+TOPIC_MAP = {
+    "unity": "🎮 Unity / Game",
+    "unity3d": "🎮 Unity / Game",
+    "game": "🎮 Unity / Game",
+    "gamedev": "🎮 Unity / Game",
+    "shader": "🎮 Unity / Game",
+    "ai": "🤖 AI / ML",
+    "ml": "🤖 AI / ML",
+    "machine-learning": "🤖 AI / ML",
+    "deep-learning": "🤖 AI / ML",
+    "llm": "🤖 AI / ML",
+    "gpt": "🤖 AI / ML",
+    "bot": "💬 Bot / Mini App",
+    "zalo": "💬 Bot / Mini App",
+    "miniapp": "💬 Bot / Mini App",
+    "react": "🌐 Web / Frontend",
+    "nextjs": "🌐 Web / Frontend",
+    "frontend": "🌐 Web / Frontend",
+    "web": "🌐 Web / Frontend",
+}
+
 def get_repos(username: str):
     repos = []
     page = 1
@@ -38,6 +60,13 @@ def get_repos(username: str):
     return repos
 
 def categorize(repo):
+    # 1. Prefer GitHub Topics
+    topics = [t.lower() for t in repo.get("topics") or []]
+    for topic in topics:
+        if topic in TOPIC_MAP:
+            return TOPIC_MAP[topic]
+
+    # 2. Fallback to keyword matching
     name = (repo.get("name") or "").lower()
     desc = (repo.get("description") or "").lower()
     lang = (repo.get("language") or "").lower()

@@ -2,8 +2,10 @@ name: Update Repos Dashboard
 
 on:
   schedule:
-    - cron: '0 0 * * 1'  # Every Monday at 00:00 UTC
-  workflow_dispatch:     # Allow manual trigger
+    - cron: '0 0 * * 1'   # Every Monday
+  workflow_dispatch:       # Manual trigger
+  push:
+    branches: [main]
 
 jobs:
   update:
@@ -13,13 +15,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Update README with latest repos
-        run: |
-          echo "# Auto-update placeholder" >> README.md
-          echo "This workflow can be extended with a script to fetch all repos via GitHub API and regenerate the overview." >> README.md
-          # TODO: Add Python script using GITHUB_TOKEN to list repos and rebuild README
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-      - name: Commit changes
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Generate dashboard
+        env:
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Optional: add this secret if you want to include private repos
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: python scripts/update_dashboard.py
+
+      - name: Commit and push
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"

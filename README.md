@@ -10,7 +10,7 @@ Sau khi bấm nút trên → chọn **Deploy from a branch** → `main` / `(root
 
 [![Cập nhật README](https://img.shields.io/badge/🚀_Cập_nhật_README-blue?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
 
-**Cập nhật**: 2026-11-06 05:04 UTC  
+**Cập nhật**: 2026-11-06 05:07 UTC  
 **Tổng**: 33 repos (0 private / 33 public)
 
 ---

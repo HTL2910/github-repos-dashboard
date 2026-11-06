@@ -65,6 +65,7 @@ def generate_profile_readme(repos):
 
     dashboard_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
     source_url = f"https://github.com/{OWNER}/{REPO_NAME}"
+    workflow_url = f"https://github.com/{OWNER}/{REPO_NAME}/actions/workflows/update-dashboard.yml"
 
     lines = [
         "<div align=\"center\">",
@@ -74,6 +75,8 @@ def generate_profile_readme(repos):
         f"**Repos Dashboard** — tự động cập nhật",
         "",
         f"[![Dashboard](https://img.shields.io/badge/📊_Xem_Dashboard_đầy_đủ-blue?style=for-the-badge)]({dashboard_url})",
+        "",
+        f"[![Update](https://img.shields.io/badge/🔄_Update_Profile-success?style=for-the-badge)]({workflow_url})",
         "",
         f"[![Source](https://img.shields.io/badge/🔧_Quản_lý_Dashboard-green?style=for-the-badge)]({source_url})",
         "",

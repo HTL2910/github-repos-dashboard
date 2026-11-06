@@ -5,47 +5,71 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GitHub Repos Dashboard</title>
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; max-width: 1100px; margin: 0 auto; padding: 20px; background: #0d1117; color: #e6edf3; }
+    body { font-family: system-ui, -apple-system, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #0d1117; color: #e6edf3; }
     h1 { margin-bottom: 5px; }
-    .subtitle { color: #8b949e; margin-bottom: 20px; }
-    .controls { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .subtitle { color: #8b949e; margin-bottom: 15px; }
+    .skill-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; }
+    .skill-box h3 { margin: 0 0 8px 0; font-size: 16px; }
+    .skills { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill { background: #238636; padding: 4px 10px; border-radius: 12px; font-size: 13px; }
+    .controls { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; align-items: center; }
     input, select, button { padding: 8px 12px; border-radius: 6px; border: 1px solid #30363d; background: #161b22; color: #e6edf3; }
     button { cursor: pointer; background: #238636; border-color: #238636; }
     button:hover { background: #2ea043; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #21262d; }
-    th { background: #161b22; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #21262d; vertical-align: top; }
+    th { background: #161b22; cursor: pointer; }
+    th:hover { background: #1c2128; }
     a { color: #58a6ff; text-decoration: none; }
     a:hover { text-decoration: underline; }
     .badge { padding: 2px 8px; border-radius: 12px; font-size: 12px; }
     .private { background: #da3633; }
     .public { background: #238636; }
     .status { margin: 10px 0; color: #8b949e; }
+    .commit { font-size: 12px; color: #8b949e; margin-top: 4px; }
   </style>
 </head>
 <body>
   <h1>📊 GitHub Repos Dashboard</h1>
-  <p class="subtitle">Dashboard nhanh cho toàn bộ repo của bạn. Fork repo này và bật GitHub Pages để dùng.</p>
+  <p class="subtitle">Nhìn vào là hiểu ngay chủ tài khoản làm gì, chuyên môn ra sao, đang active những gì.</p>
+
+  <div class="skill-box" id="skillBox" style="display:none;">
+    <h3>👤 Hồ sơ nhanh</h3>
+    <div id="skillSummary"></div>
+  </div>
 
   <div class="controls">
-    <input type="text" id="username" placeholder="GitHub username (mặc định là owner repo)" value="">
-    <input type="password" id="token" placeholder="Personal Access Token (tùy chọn, để xem private)">
+    <input type="text" id="username" placeholder="GitHub username" value="HTL2910">
+    <input type="password" id="token" placeholder="Token (tùy chọn - xem private)">
     <button onclick="loadRepos()">Tải Dashboard</button>
     <select id="filter" onchange="renderTable()">
-      <option value="all">Tất cả</option>
+      <option value="all">Tất cả nhóm</option>
       <option value="Unity / Game">Unity / Game</option>
       <option value="AI / ML">AI / ML</option>
       <option value="Bot / Mini App">Bot / Mini App</option>
       <option value="Web / Frontend">Web / Frontend</option>
       <option value="Other">Khác</option>
     </select>
+    <select id="sort" onchange="renderTable()">
+      <option value="updated">Sort: Mới nhất</option>
+      <option value="stars">Sort: Nhiều star</option>
+      <option value="name">Sort: Tên A-Z</option>
+    </select>
     <input type="text" id="search" placeholder="Tìm kiếm..." oninput="renderTable()">
   </div>
 
-  <div class="status" id="status">Nhập username rồi bấm Tải Dashboard</div>
+  <div class="status" id="status">Bấm Tải Dashboard để xem</div>
   <table id="table">
     <thead>
-      <tr><th>Repo</th><th>Language</th><th>Updated</th><th>Stars</th><th>Visibility</th><th>Description</th></tr>
+      <tr>
+        <th>Repo</th>
+        <th>Nhóm</th>
+        <th>Language</th>
+        <th>Cập nhật</th>
+        <th>Stars</th>
+        <th>Visibility</th>
+        <th>Mô tả / History gần nhất</th>
+      </tr>
     </thead>
     <tbody id="tbody"></tbody>
   </table>
@@ -56,10 +80,26 @@
     function categorize(repo) {
       const text = ((repo.name || "") + " " + (repo.description || "") + " " + (repo.language || "")).toLowerCase();
       if (text.includes("unity") || text.includes("game") || text.includes("shader")) return "Unity / Game";
-      if (text.includes("ai") || text.includes("ml") || text.includes("learning") || text.includes("gpt")) return "AI / ML";
+      if (text.includes("ai") || text.includes("ml") || text.includes("learning") || text.includes("gpt") || text.includes("llm")) return "AI / ML";
       if (text.includes("zalo") || text.includes("bot") || text.includes("miniapp")) return "Bot / Mini App";
-      if (text.includes("react") || text.includes("web") || text.includes("frontend")) return "Web / Frontend";
+      if (text.includes("react") || text.includes("web") || text.includes("frontend") || text.includes("html")) return "Web / Frontend";
       return "Other";
+    }
+
+    function updateSkillSummary() {
+      const counts = {};
+      allRepos.forEach(r => { counts[r.category] = (counts[r.category] || 0) + 1; });
+      const langs = {};
+      allRepos.forEach(r => { if (r.language) langs[r.language] = (langs[r.language] || 0) + 1; });
+      const topLangs = Object.entries(langs).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([l,c]) => `${l} (${c})`);
+      const topCats = Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([c,n]) => `${c}: ${n}`);
+
+      document.getElementById("skillSummary").innerHTML = `
+        <div><strong>Tổng repo:</strong> ${allRepos.length}</div>
+        <div style="margin:6px 0;"><strong>Nhóm chính:</strong> ${topCats.join(" · ")}</div>
+        <div><strong>Ngôn ngữ hay dùng:</strong> ${topLangs.join(" · ") || "-"}</div>
+      `;
+      document.getElementById("skillBox").style.display = "block";
     }
 
     async function loadRepos() {
@@ -82,42 +122,72 @@
           repos = repos.concat(data);
           page++;
         }
-        allRepos = repos.map(r => ({ ...r, category: categorize(r) }));
+
+        // Fetch latest commit for top repos (to avoid rate limit)
+        const withHistory = [];
+        for (const r of repos.slice(0, 40)) {
+          let lastCommit = "-";
+          try {
+            const cRes = await fetch(`https://api.github.com/repos/${username}/${r.name}/commits?per_page=1`, { headers });
+            if (cRes.ok) {
+              const commits = await cRes.json();
+              if (commits[0]) {
+                const msg = commits[0].commit.message.split("\n")[0].slice(0, 80);
+                const date = commits[0].commit.author.date.slice(0, 10);
+                lastCommit = `${date}: ${msg}`;
+              }
+            }
+          } catch {}
+          withHistory.push({ ...r, category: categorize(r), lastCommit });
+        }
+        // Add remaining without extra commit fetch
+        for (const r of repos.slice(40)) {
+          withHistory.push({ ...r, category: categorize(r), lastCommit: "-" });
+        }
+
+        allRepos = withHistory;
         status.textContent = `Đã tải ${allRepos.length} repo của ${username}`;
+        updateSkillSummary();
         renderTable();
       } catch (e) {
-        status.textContent = "Lỗi: " + e.message + " (kiểm tra username hoặc token)";
+        status.textContent = "Lỗi: " + e.message;
       }
     }
 
     function renderTable() {
       const filter = document.getElementById("filter").value;
       const search = document.getElementById("search").value.toLowerCase();
+      const sort = document.getElementById("sort").value;
       const tbody = document.getElementById("tbody");
       tbody.innerHTML = "";
 
-      const filtered = allRepos.filter(r => {
+      let filtered = allRepos.filter(r => {
         if (filter !== "all" && r.category !== filter) return false;
-        const text = (r.name + " " + (r.description || "")).toLowerCase();
+        const text = (r.name + " " + (r.description || "") + " " + (r.lastCommit || "")).toLowerCase();
         return text.includes(search);
       });
+
+      if (sort === "updated") filtered.sort((a,b) => (b.updated_at || "").localeCompare(a.updated_at || ""));
+      else if (sort === "stars") filtered.sort((a,b) => (b.stargazers_count || 0) - (a.stargazers_count || 0));
+      else if (sort === "name") filtered.sort((a,b) => a.name.localeCompare(b.name));
 
       filtered.forEach(r => {
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td><a href="${r.html_url}" target="_blank">${r.name}</a></td>
+          <td><a href="${r.html_url}" target="_blank"><strong>${r.name}</strong></a></td>
+          <td>${r.category}</td>
           <td>${r.language || "-"}</td>
           <td>${(r.updated_at || "").slice(0, 10)}</td>
           <td>${r.stargazers_count || 0}</td>
           <td><span class="badge ${r.private ? "private" : "public"}">${r.private ? "Private" : "Public"}</span></td>
-          <td>${(r.description || "-").slice(0, 80)}</td>
+          <td>
+            ${(r.description || "-").slice(0, 100)}
+            <div class="commit">📝 ${r.lastCommit || "-"}</div>
+          </td>
         `;
         tbody.appendChild(tr);
       });
     }
-
-    // Auto-fill username from current repo owner if possible
-    document.getElementById("username").value = "HTL2910";
   </script>
 </body>
 </html>

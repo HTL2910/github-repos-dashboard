@@ -14,12 +14,12 @@
 
 > **Step 0** → Create a repo named exactly your username (if it doesn't exist)  
 > **Step 1** → Create a token (select `repo` scope)  
-> **Step 2** → Thêm secret tên đúng `PERSONAL_ACCESS_TOKEN`  
+> **Step 2** → Add secret named exactly `PERSONAL_ACCESS_TOKEN`  
 > **Step 3** → Run the workflow to update your profile
 
 **Web Dashboard**: [https://HTL2910.github.io/github-repos-dashboard/](https://HTL2910.github.io/github-repos-dashboard/)
 
-**Updated**: 2026-11-10 03:44 UTC  
+**Updated**: 2026-11-10 03:52 UTC  
 **Total**: 33 repos (0 private / 33 public)
 
 ---

@@ -101,12 +101,10 @@ def generate_profile_readme(repos):
     total = len(repos)
     cache_bust = datetime.utcnow().strftime("%Y%m%d%H%M")
 
-    # Animated header (uses OWNER dynamically)
     header_text = quote(OWNER)
     header_desc = quote("Developer · Open Source · Building cool things")
     header = f"![Header](https://capsule-render.vercel.app/api?type=waving&height=220&color=gradient&customColorList=6,12,20,24&text={header_text}&fontColor=ffffff&fontSize=40&fontAlignY=35&desc={header_desc}&descAlignY=55&animation=fadeIn)"
 
-    # Typing animation
     typing = "[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&duration=2800&pause=800&color=70A5FD&center=true&vCenter=true&repeat=true&width=750&lines=Building+projects+and+exploring+new+tech;Managing+repositories+with+this+dashboard;Open+to+collaboration)](https://git.io/typing-svg)"
 
     dashboard_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
@@ -114,10 +112,8 @@ def generate_profile_readme(repos):
     workflow_url = f"https://github.com/{OWNER}/{REPO_NAME}/actions/workflows/update-dashboard.yml"
     profile_views = f"https://komarev.com/ghpvc/?username={OWNER}&style=for-the-badge&color=7c3aed&label=PROFILE+VIEWS"
 
-    # Contribution snake
     snake_dark = f"https://raw.githubusercontent.com/{OWNER}/{OWNER}/output/github-contribution-grid-snake-dark.svg"
 
-    # GitHub Stats & Trophies
     stats_url = f"https://github-readme-stats.vercel.app/api?username={OWNER}&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117&cache_bust={cache_bust}"
     langs_url = f"https://github-readme-stats.vercel.app/api/top-langs/?username={OWNER}&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117&cache_bust={cache_bust}"
     trophies_url = f"https://github-profile-trophy.vercel.app/?username={OWNER}&theme=tokyonight&no-frame=true&no-bg=true&margin-w=4&cache_bust={cache_bust}"
@@ -195,7 +191,6 @@ def generate_profile_readme(repos):
     for cat, count in sorted(groups.items(), key=lambda x: -x[1]):
         lines.append(f"- {cat}: **{count}**")
 
-    # Recent repos
     lines.extend([
         "",
         "## `> recent repos`",
@@ -213,7 +208,6 @@ def generate_profile_readme(repos):
         url = r["html_url"]
         lines.append(f"| [{name}]({url}) | {lang} | {updated} | {stars} | {cat} |")
 
-    # Contribution snake
     lines.extend([
         "",
         "## `> contribution snake`",
@@ -274,26 +268,40 @@ def generate_readme(repos):
     pages_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
     profile_repo_url = f"https://github.com/new?name={OWNER}&description=Profile+README"
     profile_view_url = f"https://github.com/{OWNER}/{OWNER}"
+    actions_url = f"https://github.com/{OWNER}/{REPO_NAME}/actions"
 
     lines = [
         f"# 📊 GitHub Repos Dashboard - {OWNER}",
         "",
-        "## 🚀 Quick Setup",
+        "## 🚀 Setup Guide (for forked users)",
         "",
-        f"[![0. Create Profile Repo](https://img.shields.io/badge/0._Create_Profile_Repo_(username/username)-purple?style=for-the-badge)]({profile_repo_url})",
+        "> **Important**: After forking, you **must run the workflow** on your fork for the buttons and content to update to your username.",
         "",
-        f"[![1. Get Token](https://img.shields.io/badge/1._Get_Personal_Access_Token-orange?style=for-the-badge)]({token_url})",
+        "### Step-by-step",
         "",
-        f"[![2. Add Secret](https://img.shields.io/badge/2._Add_Secret_PERSONAL_ACCESS_TOKEN-yellow?style=for-the-badge)]({secrets_url})",
+        f"1. **Enable the workflow** (if disabled)  ",
+        f"   Go to [Actions]({actions_url}) → click **Update Repos Dashboard** → **Enable workflow**",
         "",
-        f"[![3. Update Profile](https://img.shields.io/badge/3._Update_Profile_README-success?style=for-the-badge)]({workflow_url})",
+        f"2. **Create your profile repo** (if it doesn't exist)  ",
+        f"   [![Create Profile Repo](https://img.shields.io/badge/Create_Profile_Repo-purple?style=for-the-badge)]({profile_repo_url})  ",
+        f"   Name it exactly: `{OWNER}`",
         "",
-        f"[![View Profile](https://img.shields.io/badge/👤_View_Your_Profile-blue?style=for-the-badge)]({profile_view_url})",
+        f"3. **Create a Personal Access Token**  ",
+        f"   [![Get Token](https://img.shields.io/badge/Get_Personal_Access_Token-orange?style=for-the-badge)]({token_url})  ",
+        "   Select the **`repo`** scope",
         "",
-        "> **Step 0** → Create a repo named exactly your username (if it doesn't exist)  ",
-        "> **Step 1** → Create a token (select `repo` scope)  ",
-        "> **Step 2** → Add secret named exactly `PERSONAL_ACCESS_TOKEN`  ",
-        "> **Step 3** → Run the workflow to update your profile",
+        f"4. **Add the secret**  ",
+        f"   [![Add Secret](https://img.shields.io/badge/Add_Secret-yellow?style=for-the-badge)]({secrets_url})  ",
+        "   Name it exactly: `PERSONAL_ACCESS_TOKEN`",
+        "",
+        f"5. **Run the workflow**  ",
+        f"   [![Run Workflow](https://img.shields.io/badge/Run_Workflow-success?style=for-the-badge)]({workflow_url})  ",
+        "   This will update this README and your profile README",
+        "",
+        f"6. **View your profile**  ",
+        f"   [![View Profile](https://img.shields.io/badge/View_Profile-blue?style=for-the-badge)]({profile_view_url})",
+        "",
+        "---",
         "",
         f"**Web Dashboard**: [{pages_url}]({pages_url})",
         "",
@@ -327,7 +335,7 @@ def generate_readme(repos):
     lines.extend([
         "---",
         "",
-        "*Generated automatically*"
+        "*Generated automatically. Run the workflow to refresh.*"
     ])
     return "\n".join(lines)
 

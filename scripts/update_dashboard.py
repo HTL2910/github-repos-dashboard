@@ -8,6 +8,7 @@ import requests
 from datetime import datetime
 from collections import defaultdict
 import base64
+from urllib.parse import quote
 
 OWNER = os.getenv("GITHUB_REPOSITORY_OWNER") or os.getenv("GITHUB_ACTOR") or "HTL2910"
 # Prefer personal token so we can write to the profile repo
@@ -105,33 +106,59 @@ def generate_profile_readme(repos):
     for r in repos:
         if r.get("language"):
             langs[r["language"]] = langs.get(r["language"], 0) + 1
-    top_langs = sorted(langs.items(), key=lambda x: -x[1])[:5]
-    lang_badges = " ".join([f"`{l}`" for l, _ in top_langs])
+    top_langs = sorted(langs.items(), key=lambda x: -x[1])[:6]
+
+    # Animated header
+    header_text = quote(OWNER)
+    header_desc = quote("Game Developer · AI Enthusiast · Unity · C#")
+    header = f"![Header](https://capsule-render.vercel.app/api?type=waving&height=200&color=gradient&customColorList=6,12,20,24&text={header_text}&fontColor=ffffff&fontSize=42&fontAlignY=35&desc={header_desc}&descAlignY=55&animation=fadeIn)"
+
+    # Typing animation
+    typing = "[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&duration=2800&pause=800&color=70A5FD&center=true&vCenter=true&repeat=true&width=700&lines=Building+Unity+games+and+AI+tools;Exploring+Machine+Learning+%26+Automation;Creating+useful+side+projects)](https://git.io/typing-svg)"
 
     dashboard_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
     source_url = f"https://github.com/{OWNER}/{REPO_NAME}"
     workflow_url = f"https://github.com/{OWNER}/{REPO_NAME}/actions/workflows/update-dashboard.yml"
 
+    # Skill badges from top languages
+    badge_map = {
+        "C#": "https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white",
+        "ShaderLab": "https://img.shields.io/badge/ShaderLab-Unity-000000?style=for-the-badge&logo=unity&logoColor=white",
+        "Python": "https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white",
+        "HTML": "https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white",
+        "TypeScript": "https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white",
+        "JavaScript": "https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black",
+    }
+    skill_badges = "\n".join(
+        f"![{lang}]({badge_map.get(lang, f'https://img.shields.io/badge/{quote(lang)}-blue?style=for-the-badge')})"
+        for lang, _ in top_langs
+    )
+
     lines = [
         "<div align=\"center\">",
         "",
-        f"# {OWNER}",
+        header,
         "",
-        "**Repos Dashboard** — auto-updated",
+        typing,
         "",
         f"[![Dashboard](https://img.shields.io/badge/📊_View_Full_Dashboard-blue?style=for-the-badge)]({dashboard_url})",
-        "",
         f"[![Update](https://img.shields.io/badge/🔄_Update_Profile-success?style=for-the-badge)]({workflow_url})",
-        "",
         f"[![Source](https://img.shields.io/badge/🔧_Manage_Dashboard-green?style=for-the-badge)]({source_url})",
         "",
         "</div>",
         "",
         "---",
         "",
-        f"**Total**: {total} repos  ",
-        f"**Top languages**: {lang_badges or '-'}  ",
+        f"**Total repositories**: {total}  ",
         f"**Updated**: {now}",
+        "",
+        "### Skills",
+        "",
+        "<div align=\"center\">",
+        "",
+        skill_badges,
+        "",
+        "</div>",
         "",
         "### Main Categories",
         ""
@@ -147,7 +174,13 @@ def generate_profile_readme(repos):
         "",
         "---",
         "",
-        f"*Profile auto-updated from [{REPO_NAME}]({source_url})*"
+        f"<div align=\"center\">",
+        "",
+        f"![Footer](https://capsule-render.vercel.app/api?type=waving&height=100&section=footer&color=gradient&customColorList=6,12,20,24&animation=fadeIn)",
+        "",
+        f"*Auto-updated from [{REPO_NAME}]({source_url})*",
+        "",
+        "</div>"
     ])
     return "\n".join(lines)
 
@@ -162,7 +195,7 @@ def update_profile_readme(content: str):
         sha = resp.json().get("sha")
 
     payload = {
-        "message": "chore: auto-update profile dashboard",
+        "message": "chore: auto-update animated profile dashboard",
         "content": base64.b64encode(content.encode()).decode(),
         "branch": "main"
     }

@@ -170,6 +170,24 @@ def generate_profile_readme(repos):
     for cat, count in sorted(groups.items(), key=lambda x: -x[1]):
         lines.append(f"- {cat}: **{count}**")
 
+    # Recent repos table (top 15 most recently updated)
+    lines.extend([
+        "",
+        "### Recent Repositories",
+        "",
+        "| Repo | Language | Updated | Stars | Category |",
+        "|------|----------|---------|-------|----------|"
+    ])
+    recent = sorted(repos, key=lambda x: x.get("updated_at") or "", reverse=True)[:15]
+    for r in recent:
+        name = r["name"]
+        lang = r.get("language") or "-"
+        updated = (r.get("updated_at") or "")[:10]
+        stars = r.get("stargazers_count", 0)
+        cat = categorize(r)
+        url = r["html_url"]
+        lines.append(f"| [{name}]({url}) | {lang} | {updated} | {stars} | {cat} |")
+
     lines.extend([
         "",
         "---",
@@ -195,7 +213,7 @@ def update_profile_readme(content: str):
         sha = resp.json().get("sha")
 
     payload = {
-        "message": "chore: auto-update animated profile dashboard",
+        "message": "chore: auto-update profile with recent repos",
         "content": base64.b64encode(content.encode()).decode(),
         "branch": "main"
     }
@@ -238,7 +256,7 @@ def generate_readme(repos):
         "",
         "> **Step 0** → Create a repo named exactly your username (if it doesn't exist)  ",
         "> **Step 1** → Create a token (select `repo` scope)  ",
-        "> **Step 2** → Add secret named exactly `PERSONAL_ACCESS_TOKEN`  ",
+        "> **Step 2** → Thêm secret tên đúng `PERSONAL_ACCESS_TOKEN`  ",
         "> **Step 3** → Run the workflow to update your profile",
         "",
         f"**Web Dashboard**: [{pages_url}]({pages_url})",

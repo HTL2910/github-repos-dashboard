@@ -101,6 +101,7 @@ def categorize(repo):
 def generate_profile_readme(repos):
     now = datetime.utcnow().strftime("%Y-%m-%d")
     total = len(repos)
+    cache_bust = datetime.utcnow().strftime("%Y%m%d%H%M")
 
     # Animated header
     header_text = quote("Hà Thành Long")
@@ -118,14 +119,14 @@ def generate_profile_readme(repos):
     # Contribution snake
     snake_dark = f"https://raw.githubusercontent.com/{OWNER}/{OWNER}/output/github-contribution-grid-snake-dark.svg"
 
-    # GitHub Stats & Trophies for main account
-    stats_url = f"https://github-readme-stats.vercel.app/api?username={OWNER}&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117"
-    langs_url = f"https://github-readme-stats.vercel.app/api/top-langs/?username={OWNER}&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117"
-    trophies_url = f"https://github-profile-trophy.vercel.app/?username={OWNER}&theme=tokyonight&no-frame=true&no-bg=true&margin-w=4"
+    # GitHub Stats & Trophies for main account (with cache buster)
+    stats_url = f"https://github-readme-stats.vercel.app/api?username={OWNER}&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117&cache_bust={cache_bust}"
+    langs_url = f"https://github-readme-stats.vercel.app/api/top-langs/?username={OWNER}&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117&cache_bust={cache_bust}"
+    trophies_url = f"https://github-profile-trophy.vercel.app/?username={OWNER}&theme=tokyonight&no-frame=true&no-bg=true&margin-w=4&cache_bust={cache_bust}"
 
     # Second account stats
-    stats2_url = f"https://github-readme-stats.vercel.app/api?username={SECOND_ACCOUNT}&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117"
-    langs2_url = f"https://github-readme-stats.vercel.app/api/top-langs/?username={SECOND_ACCOUNT}&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117"
+    stats2_url = f"https://github-readme-stats.vercel.app/api?username={SECOND_ACCOUNT}&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117&cache_bust={cache_bust}"
+    langs2_url = f"https://github-readme-stats.vercel.app/api/top-langs/?username={SECOND_ACCOUNT}&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117&cache_bust={cache_bust}"
 
     lines = [
         "<div align=\"center\">",
@@ -278,7 +279,7 @@ def update_profile_readme(content: str):
         sha = resp.json().get("sha")
 
     payload = {
-        "message": "chore: add second GitHub account to profile",
+        "message": "fix: cache-bust stats and trophies",
         "content": base64.b64encode(content.encode()).decode(),
         "branch": "main"
     }

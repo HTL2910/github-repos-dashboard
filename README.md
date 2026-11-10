@@ -1,25 +1,38 @@
 # 📊 GitHub Repos Dashboard - HTL2910
 
-## 🚀 Quick Setup
+## 🚀 Setup Guide (for forked users)
 
-[![0. Create Profile Repo](https://img.shields.io/badge/0._Create_Profile_Repo_(username/username)-purple?style=for-the-badge)](https://github.com/new?name=HTL2910&description=Profile+README)
+> **Important**: After forking, you **must run the workflow** on your fork for the buttons and content to update to your username.
 
-[![1. Get Token](https://img.shields.io/badge/1._Get_Personal_Access_Token-orange?style=for-the-badge)](https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard)
+### Step-by-step
 
-[![2. Add Secret](https://img.shields.io/badge/2._Add_Secret_PERSONAL_ACCESS_TOKEN-yellow?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/settings/secrets/actions)
+1. **Enable the workflow** (if disabled)  
+   Go to [Actions](https://github.com/HTL2910/github-repos-dashboard/actions) → click **Update Repos Dashboard** → **Enable workflow**
 
-[![3. Update Profile](https://img.shields.io/badge/3._Update_Profile_README-success?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
+2. **Create your profile repo** (if it doesn't exist)  
+   [![Create Profile Repo](https://img.shields.io/badge/Create_Profile_Repo-purple?style=for-the-badge)](https://github.com/new?name=HTL2910&description=Profile+README)  
+   Name it exactly: `HTL2910`
 
-[![View Profile](https://img.shields.io/badge/👤_View_Your_Profile-blue?style=for-the-badge)](https://github.com/HTL2910/HTL2910)
+3. **Create a Personal Access Token**  
+   [![Get Token](https://img.shields.io/badge/Get_Personal_Access_Token-orange?style=for-the-badge)](https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard)  
+   Select the **`repo`** scope
 
-> **Step 0** → Create a repo named exactly your username (if it doesn't exist)  
-> **Step 1** → Create a token (select `repo` scope)  
-> **Step 2** → Add secret named exactly `PERSONAL_ACCESS_TOKEN`  
-> **Step 3** → Run the workflow to update your profile
+4. **Add the secret**  
+   [![Add Secret](https://img.shields.io/badge/Add_Secret-yellow?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/settings/secrets/actions)  
+   Name it exactly: `PERSONAL_ACCESS_TOKEN`
+
+5. **Run the workflow**  
+   [![Run Workflow](https://img.shields.io/badge/Run_Workflow-success?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)  
+   This will update this README and your profile README
+
+6. **View your profile**  
+   [![View Profile](https://img.shields.io/badge/View_Profile-blue?style=for-the-badge)](https://github.com/HTL2910/HTL2910)
+
+---
 
 **Web Dashboard**: [https://HTL2910.github.io/github-repos-dashboard/](https://HTL2910.github.io/github-repos-dashboard/)
 
-**Updated**: 2026-11-10 04:20 UTC  
+**Updated**: 2026-11-10 04:37 UTC  
 **Total**: 33 repos (0 private / 33 public)
 
 ---
@@ -79,4 +92,4 @@
 
 ---
 
-*Generated automatically*
+*Generated automatically. Run the workflow to refresh.*

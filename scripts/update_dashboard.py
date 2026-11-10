@@ -19,6 +19,8 @@ HEADERS = {"Accept": "application/vnd.github+json"}
 if TOKEN:
     HEADERS["Authorization"] = f"Bearer {TOKEN}"
 
+SECOND_ACCOUNT = "hathanhlong2002"
+
 # Topic → Category mapping
 TOPIC_MAP = {
     "unity": "🎮 Unity / Game",
@@ -116,10 +118,14 @@ def generate_profile_readme(repos):
     # Contribution snake
     snake_dark = f"https://raw.githubusercontent.com/{OWNER}/{OWNER}/output/github-contribution-grid-snake-dark.svg"
 
-    # GitHub Stats & Trophies
+    # GitHub Stats & Trophies for main account
     stats_url = f"https://github-readme-stats.vercel.app/api?username={OWNER}&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117"
     langs_url = f"https://github-readme-stats.vercel.app/api/top-langs/?username={OWNER}&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117"
     trophies_url = f"https://github-profile-trophy.vercel.app/?username={OWNER}&theme=tokyonight&no-frame=true&no-bg=true&margin-w=4"
+
+    # Second account stats
+    stats2_url = f"https://github-readme-stats.vercel.app/api?username={SECOND_ACCOUNT}&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0d1117"
+    langs2_url = f"https://github-readme-stats.vercel.app/api/top-langs/?username={SECOND_ACCOUNT}&layout=compact&theme=tokyonight&hide_border=true&bg_color=0d1117"
 
     lines = [
         "<div align=\"center\">",
@@ -128,7 +134,8 @@ def generate_profile_readme(repos):
         "",
         typing,
         "",
-        f"<a href=\"https://github.com/{OWNER}\"><img src=\"https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github&logoColor=white\"></a>",
+        f"<a href=\"https://github.com/{OWNER}\"><img src=\"https://img.shields.io/badge/GitHub-HTL2910-181717?style=for-the-badge&logo=github&logoColor=white\"></a>",
+        f"<a href=\"https://github.com/{SECOND_ACCOUNT}\"><img src=\"https://img.shields.io/badge/GitHub-hathanhlong2002-181717?style=for-the-badge&logo=github&logoColor=white\"></a>",
         f"<a href=\"{dashboard_url}\"><img src=\"https://img.shields.io/badge/📊_View_Dashboard-blue?style=for-the-badge\"></a>",
         f"<img src=\"{profile_views}\">",
         "",
@@ -174,11 +181,23 @@ def generate_profile_readme(repos):
         "",
         "## `> github stats`",
         "",
+        "### Main Account (HTL2910)",
+        "",
         "<div align=\"center\">",
         "",
         f"![GitHub Stats]({stats_url})",
         "",
         f"![Top Languages]({langs_url})",
+        "",
+        "</div>",
+        "",
+        "### Second Account (hathanhlong2002)",
+        "",
+        "<div align=\"center\">",
+        "",
+        f"![GitHub Stats]({stats2_url})",
+        "",
+        f"![Top Languages]({langs2_url})",
         "",
         "</div>",
         "",
@@ -192,7 +211,7 @@ def generate_profile_readme(repos):
         "",
         "## `> stats`",
         "",
-        f"**Total repositories**: {total}  ",
+        f"**Total repositories (HTL2910)**: {total}  ",
         f"**Last updated**: {now}",
         "",
         "### Categories",
@@ -259,7 +278,7 @@ def update_profile_readme(content: str):
         sha = resp.json().get("sha")
 
     payload = {
-        "message": "chore: add stats and trophies to profile",
+        "message": "chore: add second GitHub account to profile",
         "content": base64.b64encode(content.encode()).decode(),
         "branch": "main"
     }

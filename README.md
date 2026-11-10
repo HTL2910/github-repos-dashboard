@@ -14,12 +14,12 @@
 
 > **Step 0** → Create a repo named exactly your username (if it doesn't exist)  
 > **Step 1** → Create a token (select `repo` scope)  
-> **Step 2** → Add secret named exactly `PERSONAL_ACCESS_TOKEN`  
+> **Step 2** → Thêm secret tên đúng `PERSONAL_ACCESS_TOKEN`  
 > **Step 3** → Run the workflow to update your profile
 
 **Web Dashboard**: [https://HTL2910.github.io/github-repos-dashboard/](https://HTL2910.github.io/github-repos-dashboard/)
 
-**Updated**: 2026-11-10 03:27 UTC  
+**Updated**: 2026-11-10 03:44 UTC  
 **Total**: 33 repos (0 private / 33 public)
 
 ---
@@ -61,7 +61,7 @@
 
 | Repo | Language | Updated | Stars | Visibility | Description |
 |------|----------|---------|-------|------------|-------------|
-| [HTL2910](https://github.com/HTL2910/HTL2910) | - | 2026-11-09 | 0 | 🌐 | Config files for my GitHub profile. |
+| [HTL2910](https://github.com/HTL2910/HTL2910) | - | 2026-11-10 | 0 | 🌐 | Config files for my GitHub profile. |
 | [Power-BI](https://github.com/HTL2910/Power-BI) | - | 2024-08-21 | 0 | 🌐 | Hoc Power BI |
 
 ## 🤖 AI / ML (8)

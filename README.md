@@ -19,7 +19,7 @@
 
 **Web Dashboard**: [https://HTL2910.github.io/github-repos-dashboard/](https://HTL2910.github.io/github-repos-dashboard/)
 
-**Updated**: 2026-11-09 05:55 UTC  
+**Updated**: 2026-11-10 03:27 UTC  
 **Total**: 33 repos (0 private / 33 public)
 
 ---
@@ -28,7 +28,7 @@
 
 | Repo | Language | Updated | Stars | Visibility | Description |
 |------|----------|---------|-------|------------|-------------|
-| [github-repos-dashboard](https://github.com/HTL2910/github-repos-dashboard) | HTML | 2026-11-06 | 1 | 🌐 | Automated overview & manager for all personal GitHub reposit |
+| [github-repos-dashboard](https://github.com/HTL2910/github-repos-dashboard) | HTML | 2026-11-10 | 1 | 🌐 | Automated overview & manager for all personal GitHub reposit |
 | [AWS-AI-chatbot](https://github.com/HTL2910/AWS-AI-chatbot) | TypeScript | 2026-11-04 | 0 | 🌐 |   SafeGraph AI - VS Code AI coding assistant with Amazon Bed |
 | [bang-cards-deck](https://github.com/HTL2910/bang-cards-deck) | TypeScript | 2026-11-01 | 0 | 🌐 | - |
 | [JavaScript-Project](https://github.com/HTL2910/JavaScript-Project) | HTML | 2025-02-17 | 0 | 🌐 | Learn JavaScript |
@@ -61,7 +61,7 @@
 
 | Repo | Language | Updated | Stars | Visibility | Description |
 |------|----------|---------|-------|------------|-------------|
-| [HTL2910](https://github.com/HTL2910/HTL2910) | - | 2026-11-06 | 0 | 🌐 | Config files for my GitHub profile. |
+| [HTL2910](https://github.com/HTL2910/HTL2910) | - | 2026-11-09 | 0 | 🌐 | Config files for my GitHub profile. |
 | [Power-BI](https://github.com/HTL2910/Power-BI) | - | 2024-08-21 | 0 | 🌐 | Hoc Power BI |
 
 ## 🤖 AI / ML (8)

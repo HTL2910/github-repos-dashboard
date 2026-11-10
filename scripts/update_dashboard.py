@@ -73,18 +73,15 @@ def get_repos(username: str):
     return repos
 
 def categorize(repo):
-    # 1. Prefer GitHub Topics
     topics = [t.lower() for t in repo.get("topics") or []]
     for topic in topics:
         if topic in TOPIC_MAP:
             return TOPIC_MAP[topic]
 
-    # 2. Language-based
     lang = (repo.get("language") or "").lower()
     if lang in LANGUAGE_MAP:
         return LANGUAGE_MAP[lang]
 
-    # 3. Fallback to keyword matching
     name = (repo.get("name") or "").lower()
     desc = (repo.get("description") or "").lower()
     text = f"{name} {desc} {lang}"
@@ -102,37 +99,19 @@ def categorize(repo):
 def generate_profile_readme(repos):
     now = datetime.utcnow().strftime("%Y-%m-%d")
     total = len(repos)
-    langs = {}
-    for r in repos:
-        if r.get("language"):
-            langs[r["language"]] = langs.get(r["language"], 0) + 1
-    top_langs = sorted(langs.items(), key=lambda x: -x[1])[:6]
 
     # Animated header
-    header_text = quote(OWNER)
+    header_text = quote("Hà Thành Long")
     header_desc = quote("Game Developer · AI Enthusiast · Unity · C#")
-    header = f"![Header](https://capsule-render.vercel.app/api?type=waving&height=200&color=gradient&customColorList=6,12,20,24&text={header_text}&fontColor=ffffff&fontSize=42&fontAlignY=35&desc={header_desc}&descAlignY=55&animation=fadeIn)"
+    header = f"![Header](https://capsule-render.vercel.app/api?type=waving&height=220&color=gradient&customColorList=6,12,20,24&text={header_text}&fontColor=ffffff&fontSize=40&fontAlignY=35&desc={header_desc}&descAlignY=55&animation=fadeIn)"
 
     # Typing animation
-    typing = "[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&duration=2800&pause=800&color=70A5FD&center=true&vCenter=true&repeat=true&width=700&lines=Building+Unity+games+and+AI+tools;Exploring+Machine+Learning+%26+Automation;Creating+useful+side+projects)](https://git.io/typing-svg)"
+    typing = "[![Typing SVG](https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&duration=2800&pause=800&color=70A5FD&center=true&vCenter=true&repeat=true&width=750&lines=Building+Unity+games+%26+interactive+experiences;Exploring+AI%2C+ML+%26+automation+tools;Creating+useful+side+projects+and+dashboards)](https://git.io/typing-svg)"
 
     dashboard_url = f"https://{OWNER}.github.io/{REPO_NAME}/"
     source_url = f"https://github.com/{OWNER}/{REPO_NAME}"
     workflow_url = f"https://github.com/{OWNER}/{REPO_NAME}/actions/workflows/update-dashboard.yml"
-
-    # Skill badges from top languages
-    badge_map = {
-        "C#": "https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white",
-        "ShaderLab": "https://img.shields.io/badge/ShaderLab-Unity-000000?style=for-the-badge&logo=unity&logoColor=white",
-        "Python": "https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white",
-        "HTML": "https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white",
-        "TypeScript": "https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white",
-        "JavaScript": "https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black",
-    }
-    skill_badges = "\n".join(
-        f"![{lang}]({badge_map.get(lang, f'https://img.shields.io/badge/{quote(lang)}-blue?style=for-the-badge')})"
-        for lang, _ in top_langs
-    )
+    profile_views = f"https://komarev.com/ghpvc/?username={OWNER}&style=for-the-badge&color=7c3aed&label=PROFILE+VIEWS"
 
     lines = [
         "<div align=\"center\">",
@@ -141,26 +120,56 @@ def generate_profile_readme(repos):
         "",
         typing,
         "",
-        f"[![Dashboard](https://img.shields.io/badge/📊_View_Full_Dashboard-blue?style=for-the-badge)]({dashboard_url})",
-        f"[![Update](https://img.shields.io/badge/🔄_Update_Profile-success?style=for-the-badge)]({workflow_url})",
-        f"[![Source](https://img.shields.io/badge/🔧_Manage_Dashboard-green?style=for-the-badge)]({source_url})",
+        f"<a href=\"https://github.com/{OWNER}\"><img src=\"https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github&logoColor=white\"></a>",
+        f"<a href=\"{dashboard_url}\"><img src=\"https://img.shields.io/badge/📊_View_Dashboard-blue?style=for-the-badge\"></a>",
+        f"<img src=\"{profile_views}\">",
+        "",
+        "```text",
+        "📍 Vietnam  ·  🎮 Unity & Game Development  ·  🤖 AI / ML Enthusiast",
+        "```",
         "",
         "</div>",
         "",
-        "---",
+        "## `> whoami`",
         "",
-        f"**Total repositories**: {total}  ",
-        f"**Updated**: {now}",
+        "Game Developer and AI enthusiast focused on **Unity**, **C#**, and practical AI tools. Building games, automation scripts, and dashboards that help manage and showcase projects.",
         "",
-        "### Skills",
+        "```mermaid",
+        "flowchart LR",
+        "    IDEAS[\"Ideas & Experiments\"] --> UNITY[\"Unity / Game Dev\"]",
+        "    IDEAS --> AI[\"AI / ML Tools\"]",
+        "    UNITY --> DASH[\"Repos Dashboard\"]",
+        "    AI --> DASH",
+        "    DASH --> PROFILE[\"GitHub Profile\"]",
+        "```",
+        "",
+        "## `> toolchain`",
         "",
         "<div align=\"center\">",
         "",
-        skill_badges,
+        "### Languages & Tools",
+        "",
+        "![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)",
+        "![Unity](https://img.shields.io/badge/Unity-000000?style=for-the-badge&logo=unity&logoColor=white)",
+        "![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)",
+        "![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)",
+        "![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)",
+        "![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)",
+        "",
+        "### Focus Areas",
+        "",
+        "![Unity](https://img.shields.io/badge/Unity_Game_Dev-000000?style=for-the-badge&logo=unity&logoColor=white)",
+        "![AI](https://img.shields.io/badge/AI_%2F_ML-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)",
+        "![Web](https://img.shields.io/badge/Web_%2F_Frontend-61DAFB?style=for-the-badge&logo=react&logoColor=black)",
         "",
         "</div>",
         "",
-        "### Main Categories",
+        "## `> stats`",
+        "",
+        f"**Total repositories**: {total}  ",
+        f"**Last updated**: {now}",
+        "",
+        "### Categories",
         ""
     ]
 
@@ -170,15 +179,15 @@ def generate_profile_readme(repos):
     for cat, count in sorted(groups.items(), key=lambda x: -x[1]):
         lines.append(f"- {cat}: **{count}**")
 
-    # Recent repos table (top 15 most recently updated)
+    # Recent repos
     lines.extend([
         "",
-        "### Recent Repositories",
+        "## `> recent repos`",
         "",
         "| Repo | Language | Updated | Stars | Category |",
         "|------|----------|---------|-------|----------|"
     ])
-    recent = sorted(repos, key=lambda x: x.get("updated_at") or "", reverse=True)[:15]
+    recent = sorted(repos, key=lambda x: x.get("updated_at") or "", reverse=True)[:12]
     for r in recent:
         name = r["name"]
         lang = r.get("language") or "-"
@@ -190,13 +199,12 @@ def generate_profile_readme(repos):
 
     lines.extend([
         "",
-        "---",
+        "<div align=\"center\">",
         "",
-        f"<div align=\"center\">",
+        f"[![Update Profile](https://img.shields.io/badge/🔄_Update_Profile-success?style=for-the-badge)]({workflow_url})",
+        f"[![Manage Dashboard](https://img.shields.io/badge/🔧_Manage_Dashboard-green?style=for-the-badge)]({source_url})",
         "",
-        f"![Footer](https://capsule-render.vercel.app/api?type=waving&height=100&section=footer&color=gradient&customColorList=6,12,20,24&animation=fadeIn)",
-        "",
-        f"*Auto-updated from [{REPO_NAME}]({source_url})*",
+        "![Footer](https://capsule-render.vercel.app/api?type=waving&height=100&section=footer&color=gradient&customColorList=6,12,20,24&animation=fadeIn)",
         "",
         "</div>"
     ])
@@ -213,7 +221,7 @@ def update_profile_readme(content: str):
         sha = resp.json().get("sha")
 
     payload = {
-        "message": "chore: auto-update profile with recent repos",
+        "message": "chore: upgrade animated profile README",
         "content": base64.b64encode(content.encode()).decode(),
         "branch": "main"
     }
@@ -256,7 +264,7 @@ def generate_readme(repos):
         "",
         "> **Step 0** → Create a repo named exactly your username (if it doesn't exist)  ",
         "> **Step 1** → Create a token (select `repo` scope)  ",
-        "> **Step 2** → Thêm secret tên đúng `PERSONAL_ACCESS_TOKEN`  ",
+        "> **Step 2** → Add secret named exactly `PERSONAL_ACCESS_TOKEN`  ",
         "> **Step 3** → Run the workflow to update your profile",
         "",
         f"**Web Dashboard**: [{pages_url}]({pages_url})",

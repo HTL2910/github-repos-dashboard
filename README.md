@@ -1,38 +1,70 @@
 # 📊 GitHub Repos Dashboard - HTL2910
 
-## 🚀 Setup Guide (for forked users)
+## 🚀 Detailed Setup Guide
 
-> **Important**: After forking, you **must run the workflow** on your fork for the buttons and content to update to your username.
+> **Note for forked users**: After forking this repository, you **must run the workflow** on your own fork. This regenerates the README with your username and updates your profile.
 
-### Step-by-step
+### 1. Enable the workflow (required on forks)
 
-1. **Enable the workflow** (if disabled)  
-   Go to [Actions](https://github.com/HTL2910/github-repos-dashboard/actions) → click **Update Repos Dashboard** → **Enable workflow**
+GitHub disables workflows on forked repositories by default.
 
-2. **Create your profile repo** (if it doesn't exist)  
-   [![Create Profile Repo](https://img.shields.io/badge/Create_Profile_Repo-purple?style=for-the-badge)](https://github.com/new?name=HTL2910&description=Profile+README)  
-   Name it exactly: `HTL2910`
+1. Go to the **[Actions](https://github.com/HTL2910/github-repos-dashboard/actions)** tab
+2. Click on **Update Repos Dashboard** in the left sidebar
+3. Click the **Enable workflow** button
 
-3. **Create a Personal Access Token**  
-   [![Get Token](https://img.shields.io/badge/Get_Personal_Access_Token-orange?style=for-the-badge)](https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard)  
-   Select the **`repo`** scope
+### 2. Create your profile repository
 
-4. **Add the secret**  
-   [![Add Secret](https://img.shields.io/badge/Add_Secret-yellow?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/settings/secrets/actions)  
-   Name it exactly: `PERSONAL_ACCESS_TOKEN`
+You need a special repository named exactly your username (`HTL2910`) for the profile README to appear on your GitHub profile.
 
-5. **Run the workflow**  
-   [![Run Workflow](https://img.shields.io/badge/Run_Workflow-success?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)  
-   This will update this README and your profile README
+[![Create Profile Repo](https://img.shields.io/badge/Create_Profile_Repo-purple?style=for-the-badge)](https://github.com/new?name=HTL2910&description=Profile+README)
 
-6. **View your profile**  
-   [![View Profile](https://img.shields.io/badge/View_Profile-blue?style=for-the-badge)](https://github.com/HTL2910/HTL2910)
+- Repository name must be: **`HTL2910`**
+- Make it **Public**
+- You can leave it empty (no README needed yet)
+
+### 3. Create a Personal Access Token
+
+The workflow needs permission to update your profile README.
+
+[![Get Token](https://img.shields.io/badge/Get_Personal_Access_Token-orange?style=for-the-badge)](https://github.com/settings/tokens/new?scopes=repo&description=github-repos-dashboard)
+
+- Choose **Generate new token (classic)**
+- Give it a note (e.g. `github-repos-dashboard`)
+- Select the **`repo`** scope
+- Generate and **copy the token** immediately (you won't see it again)
+
+### 4. Add the token as a secret
+
+[![Add Secret](https://img.shields.io/badge/Add_Secret-yellow?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/settings/secrets/actions)
+
+1. Click **New repository secret**
+2. Name: `PERSONAL_ACCESS_TOKEN` (exact name, case-sensitive)
+3. Value: paste the token you copied
+4. Click **Add secret**
+
+### 5. Run the workflow
+
+[![Run Workflow](https://img.shields.io/badge/Run_Workflow-success?style=for-the-badge)](https://github.com/HTL2910/github-repos-dashboard/actions/workflows/update-dashboard.yml)
+
+1. Go to the Actions tab
+2. Select **Update Repos Dashboard**
+3. Click **Run workflow** → **Run workflow**
+
+This will:
+- Update this README with your repositories
+- Update your profile README (`{OWNER}/{OWNER}`)
+
+### 6. View your profile
+
+[![View Profile](https://img.shields.io/badge/View_Profile-blue?style=for-the-badge)](https://github.com/HTL2910/HTL2910)
+
+Refresh your GitHub profile page to see the updated README.
 
 ---
 
 **Web Dashboard**: [https://HTL2910.github.io/github-repos-dashboard/](https://HTL2910.github.io/github-repos-dashboard/)
 
-**Updated**: 2026-11-10 04:37 UTC  
+**Updated**: 2026-11-10 04:39 UTC  
 **Total**: 33 repos (0 private / 33 public)
 
 ---
